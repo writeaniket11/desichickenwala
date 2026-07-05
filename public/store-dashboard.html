@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Store Dashboard | Desi Chickenwala</title>
+  <link rel="stylesheet" href="/style.css?v=2">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body{background:var(--bg);}
+    .dash-wrap{max-width:1100px;margin:0 auto;padding:2rem 1.5rem;}
+    /* Login card */
+    .login-card{max-width:420px;margin:4rem auto;background:var(--white);border-radius:var(--r-l);padding:2.5rem;box-shadow:var(--shadow-md);border:1.5px solid var(--border);border-top:4px solid var(--orange);}
+    .login-card h2{font-size:1.4rem;color:var(--text);margin-bottom:.4rem;}
+    .login-card p{font-size:.85rem;color:var(--text-soft);margin-bottom:1.75rem;}
+    .lc-logo{display:flex;align-items:center;gap:.65rem;margin-bottom:1.75rem;}
+    .lc-logo img{height:54px;object-fit:contain;}
+    .err-msg{background:#FEF2F2;color:#B91C1C;border:1px solid #FECACA;border-radius:var(--r-s);padding:10px 14px;font-size:.84rem;font-weight:600;margin-bottom:1rem;display:none;}
+    /* Dashboard */
+    .dash-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:2rem;}
+    .store-pill{display:inline-flex;align-items:center;gap:.5rem;background:var(--green-pale);border:1px solid rgba(74,124,47,.22);color:var(--green);font-size:.82rem;font-weight:700;padding:6px 16px;border-radius:var(--r-pill);}
+    .logout-btn{display:inline-flex;align-items:center;gap:.45rem;background:var(--white);border:1.5px solid var(--border);color:var(--text-mid);font-family:'Inter',sans-serif;font-size:.82rem;font-weight:600;padding:8px 18px;border-radius:var(--r-pill);cursor:pointer;transition:all .22s;}
+    .logout-btn:hover{background:var(--orange);color:var(--white);border-color:var(--orange);}
+    /* Stats */
+    .stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1.25rem;margin-bottom:2rem;}
+    .stat-card{background:var(--white);border-radius:var(--r-m);padding:1.4rem;border:1.5px solid var(--border);box-shadow:var(--shadow-xs);}
+    .stat-card .sn{font-size:2rem;font-weight:900;color:var(--orange);font-family:'Inter',sans-serif;line-height:1;}
+    .stat-card .sl{font-size:.75rem;font-weight:600;color:var(--text-soft);text-transform:uppercase;letter-spacing:1px;margin-top:.3rem;}
+    /* Orders table */
+    .orders-card{background:var(--white);border-radius:var(--r-l);border:1.5px solid var(--border);box-shadow:var(--shadow-sm);overflow:hidden;}
+    .orders-card-head{padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--bg-soft);}
+    .orders-card-head h3{font-family:'Inter',sans-serif;font-size:1rem;font-weight:700;color:var(--text);}
+    .refresh-btn{display:inline-flex;align-items:center;gap:.4rem;background:var(--orange);color:var(--white);border:none;padding:7px 16px;border-radius:var(--r-pill);font-family:'Inter',sans-serif;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .22s;}
+    .refresh-btn:hover{background:var(--orange-h);}
+    .orders-table{width:100%;border-collapse:collapse;}
+    .orders-table th{padding:12px 16px;text-align:left;font-family:'Inter',sans-serif;font-size:.72rem;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:1px;background:var(--bg-soft);border-bottom:1px solid var(--border);}
+    .orders-table td{padding:12px 16px;font-family:'Inter',sans-serif;font-size:.83rem;color:var(--text);border-bottom:1px solid var(--border);}
+    .orders-table tr:last-child td{border-bottom:none;}
+    .orders-table tr:hover td{background:var(--bg-soft);}
+    .status-pill{display:inline-block;font-size:.7rem;font-weight:700;padding:4px 12px;border-radius:var(--r-pill);}
+    .status-pill.Pending   {background:#FEF9E7;color:#B45309;}
+    .status-pill.Preparing {background:#EFF6FF;color:#1D4ED8;}
+    .status-pill.Dispatched{background:var(--green-pale);color:var(--green);}
+    .status-pill.Delivered {background:#ECFDF5;color:#059669;}
+    .status-pill.Cancelled {background:#FEF2F2;color:#B91C1C;}
+    .status-sel{border:1.5px solid var(--border);border-radius:var(--r-s);padding:5px 10px;font-family:'Inter',sans-serif;font-size:.8rem;outline:none;cursor:pointer;background:var(--bg-soft);color:var(--text);}
+    .status-sel:focus{border-color:var(--orange);}
+    .empty-orders{text-align:center;padding:3rem;color:var(--text-soft);}
+    .empty-orders i{font-size:2.5rem;display:block;margin-bottom:.75rem;color:var(--gold);}
+  </style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="login-screen">
+  <header>
+    <div class="nav">
+      <a href="/" class="logo-wrap">
+        <img src="/logo.jpg" alt="Desi Chickenwala" class="logo-img">
+        <div class="brand">
+          <span class="brand-name">Desi Chickenwala</span>
+          <span class="brand-tag">Store Portal</span>
+        </div>
+      </a>
+    </div>
+  </header>
+  <div class="dash-wrap">
+    <div class="login-card">
+      <div class="lc-logo">
+        <img src="/logo.jpg" alt="logo">
+        <div>
+          <div style="font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:900;color:var(--orange);">Store Login</div>
+          <div style="font-size:.72rem;color:var(--text-soft);">Franchise Dashboard</div>
+        </div>
+      </div>
+      <h2>Welcome Back</h2>
+      <p>Login with your store credentials to manage orders.</p>
+      <div class="err-msg" id="login-err">Invalid username or password.</div>
+      <form onsubmit="doLogin(event)">
+        <div class="fg">
+          <label>Username</label>
+          <input type="text" id="s-user" class="fc" placeholder="e.g. karad_store" required>
+        </div>
+        <div class="fg">
+          <label>Password</label>
+          <input type="password" id="s-pass" class="fc" placeholder="••••••••••" required>
+        </div>
+        <button type="submit" class="sub-btn">Login to Dashboard</button>
+      </form>
+      <p style="text-align:center;margin-top:1rem;font-size:.78rem;color:var(--text-soft);">
+        Are you the Super Admin? <a href="/admin.html" style="color:var(--orange);font-weight:600;">Go to Admin Panel</a>
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- DASHBOARD SCREEN (hidden until login) -->
+<div id="dash-screen" style="display:none;">
+  <header>
+    <div class="nav">
+      <a href="/" class="logo-wrap">
+        <img src="/logo.jpg" alt="Desi Chickenwala" class="logo-img">
+        <div class="brand">
+          <span class="brand-name">Desi Chickenwala</span>
+          <span class="brand-tag" id="dash-store-tag">Store Portal</span>
+        </div>
+      </a>
+      <div class="nav-right">
+        <span class="store-pill"><i class="fa-solid fa-store"></i> <span id="dash-store-name">Store</span></span>
+        <button class="logout-btn" onclick="doLogout()"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="dash-wrap">
+    <div class="dash-header">
+      <div>
+        <h2 style="font-size:1.5rem;color:var(--text);">Order Dashboard</h2>
+        <p style="font-size:.85rem;color:var(--text-soft);">Manage incoming orders for your store</p>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row" id="stats-row">
+      <div class="stat-card"><div class="sn" id="stat-total">0</div><div class="sl">Total Orders</div></div>
+      <div class="stat-card"><div class="sn" id="stat-pending">0</div><div class="sl">Pending</div></div>
+      <div class="stat-card"><div class="sn" id="stat-dispatched">0</div><div class="sl">Dispatched</div></div>
+      <div class="stat-card"><div class="sn" id="stat-delivered">0</div><div class="sl">Delivered</div></div>
+    </div>
+
+    <!-- Orders Table -->
+    <div class="orders-card">
+      <div class="orders-card-head">
+        <h3>Incoming Orders</h3>
+        <button class="refresh-btn" onclick="loadOrders()"><i class="fa-solid fa-rotate-right"></i> Refresh</button>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="orders-table">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Customer</th>
+              <th>Phone</th>
+              <th>Items</th>
+              <th>Total</th>
+              <th>Payment</th>
+              <th>Time</th>
+              <th>Status</th>
+              <th>Update</th>
+            </tr>
+          </thead>
+          <tbody id="orders-tbody">
+            <tr><td colspan="9" class="empty-orders"><i class="fa-solid fa-inbox"></i>No orders yet</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let storeSession = null;
+
+async function doLogin(e) {
+  e.preventDefault();
+  const u = document.getElementById('s-user').value.trim();
+  const p = document.getElementById('s-pass').value.trim();
+  document.getElementById('login-err').style.display = 'none';
+  try {
+    const r = await fetch('/api/auth/store',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:u,password:p})});
+    const d = await r.json();
+    if (d.success) {
+      storeSession = d;
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('dash-screen').style.display = 'block';
+      document.getElementById('dash-store-name').textContent = d.storeName;
+      document.getElementById('dash-store-tag').textContent  = d.storeName;
+      loadOrders();
+      setInterval(loadOrders, 30000); // auto-refresh every 30s
+    } else {
+      document.getElementById('login-err').style.display = 'block';
+    }
+  } catch(err) {
+    document.getElementById('login-err').textContent = 'Server error. Please try again.';
+    document.getElementById('login-err').style.display = 'block';
+  }
+}
+
+function doLogout() {
+  storeSession = null;
+  document.getElementById('login-screen').style.display = 'block';
+  document.getElementById('dash-screen').style.display  = 'none';
+}
+
+async function loadOrders() {
+  if (!storeSession) return;
+  try {
+    const r  = await fetch(`/api/orders/store/${storeSession.storeId}`);
+    const orders = await r.json();
+    renderOrders(orders);
+  } catch(e) { console.error(e); }
+}
+
+function renderOrders(orders) {
+  const tbody = document.getElementById('orders-tbody');
+  // Stats
+  document.getElementById('stat-total').textContent     = orders.length;
+  document.getElementById('stat-pending').textContent   = orders.filter(o=>o.status==='Pending').length;
+  document.getElementById('stat-dispatched').textContent= orders.filter(o=>o.status==='Dispatched').length;
+  document.getElementById('stat-delivered').textContent = orders.filter(o=>o.status==='Delivered').length;
+
+  if (!orders.length) {
+    tbody.innerHTML = `<tr><td colspan="9" class="empty-orders"><i class="fa-solid fa-inbox"></i>No orders yet. Share your PIN zone with customers!</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = '';
+  [...orders].reverse().forEach(o => {
+    const items = (o.items||[]).map(i=>`${i.nameEn||i.nameMr} (${i.lEn||i.optionEn||''}) ×${i.qty}`).join(', ');
+    const time  = o.timestamp ? new Date(o.timestamp).toLocaleString('en-IN') : '-';
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><strong style="color:var(--orange);">${o.id}</strong></td>
+      <td>${o.customerName}</td>
+      <td>${o.customerPhone}</td>
+      <td style="max-width:180px;font-size:.76rem;">${items}</td>
+      <td><strong>₹${o.totalAmount}</strong></td>
+      <td>${o.paymentMethod}</td>
+      <td style="font-size:.76rem;">${time}</td>
+      <td><span class="status-pill ${o.status}">${o.status}</span></td>
+      <td>
+        <select class="status-sel" onchange="updateStatus('${o.id}', this.value)">
+          ${['Pending','Preparing','Dispatched','Delivered','Cancelled'].map(s=>`<option ${o.status===s?'selected':''}>${s}</option>`).join('')}
+        </select>
+      </td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+async function updateStatus(id, status) {
+  try {
+    await fetch(`/api/orders/${id}`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({status})});
+    loadOrders();
+  } catch(e) { alert('Failed to update. Try again.'); }
+}
+</script>
+</body>
+</html>

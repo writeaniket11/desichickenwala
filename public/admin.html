@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | Desi Chickenwala Control Panel</title>
+  <link rel="stylesheet" href="/style.css?v=2">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --border-color: rgba(245, 158, 11, 0.22);
+      --text-dark: #1C0A00;
+      --text-light: #704F37;
+      --sunrise-orange: #EA580C;
+      --sunrise-orange-hover: #C2410C;
+      --error-red: #DC2626;
+    }
+    /* Custom admin panel modifications */
+    .admin-container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    .admin-header {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      margin-bottom: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .admin-sections {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+    }
+    @media (min-width: 992px) {
+      .admin-sections {
+        grid-template-columns: 3fr 2fr;
+      }
+    }
+    .admin-card {
+      background: white;
+      border-radius: 16px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+      overflow: hidden;
+      margin-bottom: 2rem;
+    }
+    .admin-card-header {
+      background: #F9F7F1;
+      padding: 1.25rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .admin-card-header h3 {
+      font-size: 1.2rem;
+      color: var(--text-dark);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .admin-card-body {
+      padding: 1.5rem;
+    }
+    /* Table styling for orders, products and stores */
+    .admin-table-container {
+      overflow-x: auto;
+    }
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+      text-align: left;
+    }
+    .admin-table th, .admin-table td {
+      padding: 12px;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 0.9rem;
+    }
+    .admin-table th {
+      background: #F9F7F1;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+    .status-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .status-Pending { background: #FFE082; color: #E65100; }
+    .status-Preparing { background: #B3E5FC; color: #0277BD; }
+    .status-Dispatched { background: #E1BEE7; color: #6A1B9A; }
+    .status-Delivered { background: #C8E6C9; color: #2E7D32; }
+    .status-Cancelled { background: #FFCDD2; color: #C62828; }
+
+    .action-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      padding: 4px;
+      transition: color 0.2s;
+    }
+    .action-btn.edit { color: var(--sunrise-orange); }
+    .action-btn.delete { color: var(--error-red); }
+
+    /* Admin forms styles */
+    .admin-form-group {
+      margin-bottom: 1rem;
+    }
+    .admin-form-group label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+      color: var(--text-dark);
+    }
+    .admin-form-control {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      outline: none;
+      font-size: 0.9rem;
+    }
+    .admin-form-control:focus {
+      border-color: var(--sunrise-orange);
+    }
+    .admin-submit-btn {
+      background: var(--sunrise-orange);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.3s;
+      width: 100%;
+      margin-top: 1rem;
+    }
+    .admin-submit-btn:hover {
+      background: var(--sunrise-orange-hover);
+    }
+    .badge-counter {
+      background: var(--sunrise-orange);
+      color: white;
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header Navigation -->
+  <header>
+    <div class="nav-container">
+      <div class="logo-section">
+        <img src="/logo.jpg" alt="Logo" class="logo-img">
+        <div class="logo-text">
+
+          <h1>Desi Chickenwala Admin</h1>
+          <p>Control Center & Store Management</p>
+        </div>
+      </div>
+      <div class="nav-controls">
+        <a href="/" class="admin-link">
+          <i class="fa-solid fa-store"></i> Back to Storefront
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <div class="admin-container">
+    
+    <!-- Admin Hero stats banner -->
+    <div class="admin-header">
+      <div>
+        <h2>Welcome to Desi Chickenwala Admin Panel</h2>
+        <p style="color: var(--text-light); font-size: 0.9rem;">Manage incoming customer orders, add stores, and update product catalog dynamically.</p>
+      </div>
+    </div>
+
+    <div class="admin-sections">
+      
+      <!-- LEFT SECTION: Orders & Logs -->
+      <div>
+        <!-- Order List Card -->
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <h3><i class="fa-solid fa-receipt"></i> Customer Orders <span class="badge-counter" id="orders-count">0</span></h3>
+          </div>
+          <div class="admin-card-body">
+            <div class="admin-table-container">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Order ID</th>
+                    <th>Customer Info</th>
+                    <th>Routed Store</th>
+                    <th>Items Purchased</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="orders-tbody">
+                  <!-- Load dynamic orders -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Store List Card -->
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <h3><i class="fa-solid fa-shop"></i> Managed Store Locations</h3>
+          </div>
+          <div class="admin-card-body">
+            <div class="admin-table-container">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Store Name</th>
+                    <th>Address</th>
+                    <th>Contact</th>
+                    <th>Coordinates (Lat/Lng)</th>
+                    <th>Geofence</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="stores-tbody">
+                  <!-- Load dynamic stores -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT SECTION: Forms Control -->
+      <div>
+        
+        <!-- Product Manager Form -->
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <h3 id="product-form-title"><i class="fa-solid fa-folder-plus"></i> Add / Edit Product</h3>
+            <button class="lang-btn" style="padding: 2px 10px; font-size: 0.75rem;" onclick="resetProductForm()">Clear Form</button>
+          </div>
+          <div class="admin-card-body">
+            <form id="product-form" onsubmit="saveProduct(event)">
+              <input type="hidden" id="prod-id" name="id">
+              
+              <div class="admin-form-group">
+                <label for="prod-name-en">Product Name (English)</label>
+                <input type="text" id="prod-name-en" name="nameEn" class="admin-form-control" placeholder="e.g. Gavran Supreme" required>
+              </div>
+              <div class="admin-form-group">
+                <label for="prod-name-mr">Product Name (मराठी)</label>
+                <input type="text" id="prod-name-mr" name="nameMr" class="admin-form-control" placeholder="उदा. गावरान सुप्रीम" required>
+              </div>
+
+              <div class="admin-form-group">
+                <label for="prod-sub-en">Subtitle / Categories (English)</label>
+                <input type="text" id="prod-sub-en" name="subEn" class="admin-form-control" placeholder="e.g. Supreme Quality, Supreme Taste" required>
+              </div>
+              <div class="admin-form-group">
+                <label for="prod-sub-mr">Subtitle / Categories (मराठी)</label>
+                <input type="text" id="prod-sub-mr" name="subMr" class="admin-form-control" placeholder="उदा. उत्कृष्ट गुणवत्ता, अप्रतिम चव" required>
+              </div>
+
+              <div class="radio-tiles" style="margin-bottom: 1rem;">
+                <div class="admin-form-group">
+                  <label for="prod-age-en">Age (English)</label>
+                  <input type="text" id="prod-age-en" name="ageEn" class="admin-form-control" placeholder="e.g. 105+ Days" required>
+                </div>
+                <div class="admin-form-group">
+                  <label for="prod-age-mr">Age (मराठी)</label>
+                  <input type="text" id="prod-age-mr" name="ageMr" class="admin-form-control" placeholder="उदा. १०५+ दिवस" required>
+                </div>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem;">
+                <div class="admin-form-group">
+                  <label for="prod-price-live">Live Price (₹)</label>
+                  <input type="number" id="prod-price-live" name="priceLive" class="admin-form-control" required>
+                </div>
+                <div class="admin-form-group">
+                  <label for="prod-price-cut">Cutting Price (₹)</label>
+                  <input type="number" id="prod-price-cut" name="priceCut" class="admin-form-control" required>
+                </div>
+                <div class="admin-form-group">
+                  <label for="prod-price-roast">Roasting Add-on (₹)</label>
+                  <input type="number" id="prod-price-roast" name="priceRoast" class="admin-form-control" required>
+                </div>
+              </div>
+
+              <div class="admin-form-group">
+                <label for="prod-highlight-en">Description Highlight (English)</label>
+                <textarea id="prod-highlight-en" name="highlightEn" class="admin-form-control" rows="2" required></textarea>
+              </div>
+              <div class="admin-form-group">
+                <label for="prod-highlight-mr">Description Highlight (मराठी)</label>
+                <textarea id="prod-highlight-mr" name="highlightMr" class="admin-form-control" rows="2" required></textarea>
+              </div>
+
+              <div class="admin-form-group">
+                <label for="prod-images">Upload Product Images (Max 2: Live + Meat Scrollable)</label>
+                <input type="file" id="prod-images" name="productImages" class="admin-form-control" multiple accept="image/*">
+                <p style="font-size: 0.7rem; color: var(--text-light); margin-top: 0.25rem;">Upload new files to overwrite product images.</p>
+              </div>
+
+              <button type="submit" class="admin-submit-btn">Save Product</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Store Location Form -->
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <h3><i class="fa-solid fa-map-pin"></i> Add Franchise Store</h3>
+          </div>
+          <div class="admin-card-body">
+            <form id="store-form" onsubmit="saveStore(event)">
+              <input type="hidden" id="store-id">
+              
+              <div class="admin-form-group">
+                <label for="store-name-en">Store Name (English)</label>
+                <input type="text" id="store-name-en" class="admin-form-control" placeholder="e.g. Kolhapur Store" required>
+              </div>
+              <div class="admin-form-group">
+                <label for="store-name-mr">Store Name (मराठी)</label>
+                <input type="text" id="store-name-mr" class="admin-form-control" placeholder="उदा. कोल्हापूर शाखा" required>
+              </div>
+              <div class="admin-form-group">
+                <label for="store-address">Full Address</label>
+                <input type="text" id="store-address" class="admin-form-control" required>
+              </div>
+              
+              <div class="radio-tiles">
+                <div class="admin-form-group">
+                  <label for="store-owner">Owner Name</label>
+                  <input type="text" id="store-owner" class="admin-form-control" required>
+                </div>
+                <div class="admin-form-group">
+                  <label for="store-owner-phone">Owner Phone</label>
+                  <input type="text" id="store-owner-phone" class="admin-form-control" required>
+                </div>
+              </div>
+
+              <div class="admin-form-group">
+                <label for="store-contact">Shop Contacts (Comma Separated)</label>
+                <input type="text" id="store-contact" class="admin-form-control" placeholder="e.g. 9876543210, 9876543211" required>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem;">
+                <div class="admin-form-group">
+                  <label for="store-lat">Latitude</label>
+                  <input type="number" step="any" id="store-lat" class="admin-form-control" required>
+                </div>
+                <div class="admin-form-group">
+                  <label for="store-lng">Longitude</label>
+                  <input type="number" step="any" id="store-lng" class="admin-form-control" required>
+                </div>
+                <div class="admin-form-group">
+                  <label for="store-radius">Radius (km)</label>
+                  <input type="number" id="store-radius" class="admin-form-control" value="5" required>
+                </div>
+              </div>
+
+              <button type="submit" class="admin-submit-btn">Save Store Location</button>
+            </form>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <script src="/admin.js"></script>
+</body>
+</html>

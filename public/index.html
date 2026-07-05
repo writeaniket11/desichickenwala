@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Desi Chickenwala | Authentic Desi and Delicious</title>
+  <meta name="description" content="100% authentic Gavran Desi Chicken — chemical-free, antibiotic-free, raised naturally. Farm-fresh delivery. Order online — Karad & Kolhapur.">
+  <link rel="stylesheet" href="/style.css?v=9">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<!-- CART OVERLAY -->
+<div class="cart-overlay" id="cart-overlay" onclick="toggleCart(false)"></div>
+
+<!-- ═══════════════════ HEADER ═══════════════════ -->
+<header id="main-header">
+  <div class="nav">
+    <a href="/" class="logo-wrap">
+      <img src="/logo.jpg" alt="Desi Chickenwala" class="logo-img">
+      <div class="brand">
+        <span class="brand-name">Desi Chickenwala</span>
+        <span class="brand-tag">Authentic Desi and Delicious</span>
+      </div>
+    </a>
+
+    <!-- Desktop right -->
+    <div class="nav-right">
+      <div class="lang-sw">
+        <button class="lbtn active" onclick="switchLang('en')">English</button>
+        <button class="lbtn" onclick="switchLang('mr')">मराठी</button>
+      </div>
+      <a href="/admin.html" class="admin-btn">
+        <i class="fa-solid fa-user-shield"></i> Admin
+      </a>
+      <button class="cart-btn" onclick="toggleCart(true)" aria-label="Cart">
+        <i class="fa-solid fa-basket-shopping"></i>
+        <span class="cart-badge" id="cart-badge">0</span>
+      </button>
+    </div>
+
+    <!-- Mobile: cart + hamburger -->
+    <div style="display:flex;align-items:center;gap:.65rem;">
+      <button class="cart-btn" onclick="toggleCart(true)" aria-label="Cart" style="display:none;" id="mob-cart">
+        <i class="fa-solid fa-basket-shopping"></i>
+        <span class="cart-badge" id="cart-badge-mob">0</span>
+      </button>
+      <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile dropdown menu -->
+  <div class="mobile-menu" id="mobile-menu">
+    <div style="display:flex;gap:.5rem;">
+      <button class="lbtn active" onclick="switchLang('en');toggleMenu()">English</button>
+      <button class="lbtn" onclick="switchLang('mr');toggleMenu()">मराठी</button>
+    </div>
+    <a href="/admin.html" class="admin-btn" onclick="toggleMenu()">
+      <i class="fa-solid fa-user-shield"></i> Admin Panel
+    </a>
+  </div>
+</header>
+
+<!-- ═══════════════════ HERO BANNER ═══════════════════ -->
+<section class="hero-slider" id="hero-slider">
+  <div class="slides-track" id="slides-track">
+    <!-- Slide 1 -->
+    <div class="slide">
+      <img src="/uploads/banner1.png" alt="100% Organic Free-Range Chicken">
+      <div class="slide-content">
+        <h2 class="slide-title" data-mr="१००% अस्सल गावरान चिकन" data-en="100% Authentic Gavran Desi Chicken">100% Authentic Gavran Desi Chicken</h2>
+        <p class="slide-desc" data-mr="मोकळ्या कुरणात आणि नैसर्गिक वातावरणात वाढवलेले निरोगी चिकन." data-en="Raised naturally on open pastures — chemical-free & antibiotic-free.">Raised naturally on open pastures — chemical-free & antibiotic-free.</p>
+        <button class="slide-btn" onclick="document.getElementById('products-sec').scrollIntoView({behavior:'smooth'})" data-mr="आत्ताच ऑर्डर करा" data-en="Order Fresh Daily">Order Fresh Daily</button>
+      </div>
+    </div>
+    <!-- Slide 2 -->
+    <div class="slide">
+      <img src="/uploads/banner2.png" alt="Chemical-Free & Antibiotic-Free Fresh Meat">
+      <div class="slide-content">
+        <h2 class="slide-title" data-mr="केमिकल-मुक्त आणि आरोग्यदायी पर्याय" data-en="Chemical-Free & Healthy Choice">Chemical-Free & Healthy Choice</h2>
+        <p class="slide-desc" data-mr="कोणतेही हार्मोन्स किंवा स्टेरॉईड्स नसलेले, सुरक्षित हाताळणीसह थेट शेतातून ताजे." data-en="Zero hormones, zero steroids. Delivered fresh, clean, and vacuum-packed.">Zero hormones, zero steroids. Delivered fresh, clean, and vacuum-packed.</p>
+        <button class="slide-btn" onclick="document.getElementById('products-sec').scrollIntoView({behavior:'smooth'})" data-mr="शुद्धतेची खात्री करा" data-en="Taste the Purity">Taste the Purity</button>
+      </div>
+    </div>
+    <!-- Slide 3 -->
+    <div class="slide">
+      <img src="/uploads/banner3.png" alt="Mouth-Watering Charcoal Roasted Chicken">
+      <div class="slide-content">
+        <h2 class="slide-title" data-mr="गरमागरम कोळशावर भाजलेले चिकन" data-en="Fresh Charcoal Roasted Goodness">Fresh Charcoal Roasted Goodness</h2>
+        <p class="slide-desc" data-mr="ताजे कापलेले चिकन, तुमच्या आवडीनुसार कोळशाच्या आचेवर भाजून मिळवा." data-en="Have your chicken freshly dressed, cleaned, and charcoal-roasted to perfection.">Have your chicken freshly dressed, cleaned, and charcoal-roasted to perfection.</p>
+        <button class="slide-btn" onclick="document.getElementById('products-sec').scrollIntoView({behavior:'smooth'})" data-mr="भाजून मिळवा" data-en="Try Roasted Customizer">Try Roasted Customizer</button>
+      </div>
+    </div>
+  </div>
+  <!-- Navigation Arrows -->
+  <button class="slider-prev" onclick="changeSlide(-1)" aria-label="Previous Banner">&#10094;</button>
+  <button class="slider-next" onclick="changeSlide(1)" aria-label="Next Banner">&#10095;</button>
+  <!-- Dots Indicators -->
+  <div class="slider-dots">
+    <button class="dot active" onclick="goToSlide(0)" aria-label="Slide 1"></button>
+    <button class="dot" onclick="goToSlide(1)" aria-label="Slide 2"></button>
+    <button class="dot" onclick="goToSlide(2)" aria-label="Slide 3"></button>
+  </div>
+</section>
+
+<!-- ═══════════════════ PIN CODE CHECK ═══════════════════ -->
+<section class="pin-section" id="pin-sec">
+  <div class="pin-card fi">
+    <div class="pin-head">
+      <div class="pin-icon"><i class="fa-solid fa-location-dot"></i></div>
+      <h3 data-mr="डिलिव्हरी उपलब्धता तपासा" data-en="Check Delivery Availability">Check Delivery Availability</h3>
+    </div>
+    <p class="pin-sub" data-mr="तुमचा ६-अंकी PIN कोड टाका आणि आम्ही तुमच्या भागात डिलिव्हरी करतो का ते तपासा." data-en="Enter your 6-digit PIN code to check if we deliver to your area.">
+      Enter your 6-digit PIN code to check if we deliver to your area.
+    </p>
+    <div class="pin-row">
+      <input type="text" id="pin-input" class="pin-input" placeholder="e.g. 415110" maxlength="6" inputmode="numeric" pattern="[0-9]{6}" onkeydown="if(event.key==='Enter')checkPin()">
+      <button class="pin-btn" onclick="checkPin()">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <span data-mr="तपासा" data-en="Check">Check</span>
+      </button>
+    </div>
+    <div class="pin-result" id="pin-result"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════ PRODUCTS ═══════════════════ -->
+<section class="products-wrap sec-pad" id="products-sec">
+  <div class="container">
+    <div class="sec-header fi">
+      <span class="sec-eye" data-mr="आमची उत्पादने" data-en="Our Products">Our Products</span>
+      <h2 data-mr="गावरान चिकन <span>निवडा</span>" data-en="Choose Your <span>Gavran Chicken</span>">Choose Your <span>Gavran Chicken</span></h2>
+      <p data-mr="१००% अस्सल गावरान चिकन — रोज सकाळी शेतातून ताजे." data-en="100% authentic Gavran Desi Chicken — sourced fresh from our farms every morning.">
+        100% authentic Gavran Desi Chicken — sourced fresh from our farms every morning.
+      </p>
+    </div>
+    <div class="products-grid" id="products-container"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════ FEATURES STRIP ═══════════════════ -->
+<div class="features-strip">
+  <div class="features-grid">
+    <div class="feat-item fi">
+      <div class="feat-icon">🌾</div>
+      <h4 data-mr="नैसर्गिक खाद्य" data-en="Natural Diet">Natural Diet</h4>
+      <p data-mr="धान्य, वनस्पती आणि BSF लार्वा" data-en="Grains, plants & BSF larvae">Grains, plants & BSF larvae</p>
+    </div>
+    <div class="feat-item fi">
+      <div class="feat-icon">🚫</div>
+      <h4 data-mr="कोणतेही केमिकल नाही" data-en="Zero Chemicals">Zero Chemicals</h4>
+      <p data-mr="स्टेरॉइड, हार्मोन्स, अँटीबायोटिक्स नाही" data-en="No steroids, hormones or antibiotics">No steroids, hormones or antibiotics</p>
+    </div>
+    <div class="feat-item fi">
+      <div class="feat-icon">🐓</div>
+      <h4 data-mr="मुक्त संचार" data-en="Free-Range Birds">Free-Range Birds</h4>
+      <p data-mr="मोकळ्या शेतात नैसर्गिकरीत्या वाढवलेले" data-en="Raised freely in open pastures">Raised freely in open pastures</p>
+    </div>
+    <div class="feat-item fi">
+      <div class="feat-icon">🔥</div>
+      <h4 data-mr="ताजे भाजलेले" data-en="Freshly Roasted">Freshly Roasted</h4>
+      <p data-mr="कोळशावर भाजलेले +₹१०० सेवा" data-en="Charcoal roasted on order +₹100">Charcoal roasted on order +₹100</p>
+    </div>
+    <div class="feat-item fi">
+      <div class="feat-icon">📦</div>
+      <h4 data-mr="रोज ताजे पॅक" data-en="Daily Fresh Pack">Daily Fresh Pack</h4>
+      <p data-mr="प्रत्येक ऑर्डर ताजी हाताळणी व पॅकिंग" data-en="Every order freshly processed & packed">Every order freshly processed & packed</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ JOURNEY ═══════════════════ -->
+<section class="journey-wrap sec-pad" id="journey-sec">
+  <div class="container">
+    <div class="sec-header fi">
+      <span class="sec-eye" data-mr="आमची कहाणी" data-en="Our Process">Our Process</span>
+      <h2 data-mr="शेतातून थेट <span>तुमच्यापर्यंत</span>" data-en="Farm to Your <span>Table</span>">Farm to Your <span>Table</span></h2>
+      <p data-mr="८ टप्प्यांमध्ये गुणवत्ता आणि ताजेपणाची हमी" data-en="8 stages of quality assurance from hatchery to your doorstep">
+        8 stages of quality assurance from hatchery to your doorstep
+      </p>
+    </div>
+
+    <div class="journey-grid" id="journey-container"></div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════ FRANCHISE STORES ═══════════════════ -->
+<section class="franchise-section">
+  <div class="franchise-inner">
+    <div class="franchise-label">
+      <h3 data-mr="आमची स्टोअर्स" data-en="Our Stores">Our Stores</h3>
+      <span class="badge" data-mr="नेटवर्क वाढत आहे" data-en="Growing Network">Growing Network</span>
+    </div>
+    <div class="franchise-cards" id="franchise-cards">
+      <!-- Dynamically populated -->
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ FOOTER ═══════════════════ -->
+<!-- ═══════════════════ FOOTER ═══════════════════ -->
+<footer class="ft-new-design">
+  <div class="ft-container">
+    <div class="ft-grid-new">
+      <!-- Column 1: Our Products -->
+      <div class="ft-col">
+        <h4 class="ft-title-underline" data-mr="आमची उत्पादने" data-en="OUR PRODUCTS">OUR PRODUCTS</h4>
+        <ul class="ft-links-list">
+          <li><a href="#products-sec" data-mr="गावरान देशी चिकन" data-en="Gavran Desi Chicken">Gavran Desi Chicken</a></li>
+          <li><a href="#products-sec" data-mr="गावरान सुप्रीम" data-en="Gavran Supreme">Gavran Supreme</a></li>
+          <li><a href="#products-sec" data-mr="गावरान पॉवर ग्रो" data-en="Gavran Power Grow">Gavran Power Grow</a></li>
+          <li><a href="#products-sec" data-mr="सर्व उत्पादने" data-en="All Products">All Products</a></li>
+        </ul>
+      </div>
+
+      <!-- Column 2: Know Us -->
+      <div class="ft-col">
+        <h4 class="ft-title-underline" data-mr="माहिती" data-en="KNOW US">KNOW US</h4>
+        <ul class="ft-links-list">
+          <li><a href="#" onclick="document.querySelector('.franchise-section').scrollIntoView({behavior:'smooth'}); return false;" data-mr="आमची स्टोअर्स" data-en="Our Stores">Our Stores</a></li>
+          <li><a href="/admin.html" data-mr="अ‍ॅडमिन पॅनेल" data-en="Admin Panel">Admin Panel</a></li>
+          <li><a href="/store-dashboard.html" data-mr="स्टोअर लॉगिन" data-en="Store Login">Store Login</a></li>
+          <li><a href="#" data-mr="नियम आणि अटी" data-en="Terms And Conditions">Terms And Conditions</a></li>
+          <li><a href="#" data-mr="गोपनीयता धोरण" data-en="Privacy Policy">Privacy Policy</a></li>
+        </ul>
+      </div>
+
+      <!-- Column 3: Our Stores -->
+      <div class="ft-col">
+        <h4 class="ft-title-underline" data-mr="आमचे स्टोअर" data-en="OUR STORES">OUR STORES</h4>
+        <div class="ft-store-info">
+          <strong data-mr="कराड स्टोअर" data-en="Karad Store">Karad Store</strong>
+          <p class="ft-store-desc">PD Patil Garden, Shaniwar Peth, Karad</p>
+          <p class="ft-store-phone"><i class="fa-solid fa-phone"></i> 9459364555</p>
+          <p class="ft-store-time"><i class="fa-solid fa-clock"></i> 8 AM – 8 PM</p>
+          <span class="ft-coming-soon-badge" data-mr="कोल्हापूर (लवकरच!)" data-en="Kolhapur (Soon!)">Kolhapur (Soon!)</span>
+        </div>
+      </div>
+
+      <!-- Column 4: App & Connect -->
+      <div class="ft-col">
+        <h4 class="ft-title-underline" data-mr="अॅप आणि सोशल" data-en="APP & CONNECT">APP & CONNECT</h4>
+        <div class="app-badges">
+          <a href="#" class="app-btn" onclick="return false;">
+            <i class="fa-brands fa-google-play"></i>
+            <div class="app-btn-text">
+              <span>GET IT ON</span>
+              <strong>Google Play</strong>
+            </div>
+          </a>
+          <a href="#" class="app-btn" onclick="return false;">
+            <i class="fa-brands fa-apple"></i>
+            <div class="app-btn-text">
+              <span>Download on the</span>
+              <strong>App Store</strong>
+            </div>
+          </a>
+        </div>
+        <div class="social-pill-container" style="margin-top:0.5rem;">
+          <div class="social-pill">
+            <a href="https://www.facebook.com/" target="_blank" class="soc-icon fb" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="https://www.instagram.com/desi.chickenwala/" target="_blank" class="soc-icon ig" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            <a href="https://wa.me/919459364555" target="_blank" class="soc-icon wa" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+            <a href="https://maps.app.goo.gl/91vLrpnUojwP9XdG6" target="_blank" class="soc-icon maps" aria-label="Google Maps"><i class="fa-solid fa-location-dot"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Office Address & Brand Info -->
+    <div class="ft-info-row">
+      <div class="ft-brand-info">
+        <img src="/logo.jpg" alt="Desi Chickenwala Logo" class="ft-logo">
+        <p data-mr="अस्सल गावरान आणि स्वादिष्ट चिकन तुमच्या दारापर्यंत. केमिकल मुक्त, नैसर्गिक, रोज ताजे." data-en="Your most trusted source of 100% authentic, farm-fresh Gavran Desi Chicken. Chemical-free, naturally raised, and delivered fresh daily.">
+          Your most trusted source of 100% authentic, farm-fresh Gavran Desi Chicken. Chemical-free, naturally raised, and delivered fresh daily.
+        </p>
+      </div>
+      <div class="ft-address-info">
+        <h5 data-mr="मुख्य कार्यालय" data-en="Corporate Office">Corporate Office</h5>
+        <p data-mr="पत्ता: शनिवार पेठ, कराड, महाराष्ट्र ४१५११०" data-en="Address: Shaniwar Peth, Karad, Maharashtra 415110">
+          Address: Shaniwar Peth, Karad, Maharashtra 415110
+        </p>
+        <p><i class="fa-solid fa-envelope"></i> Info@desichickenwala.com</p>
+      </div>
+    </div>
+
+    <!-- Copyright -->
+    <div class="ft-bottom-new">
+      <p>&copy; 2026 Desi Chickenwala. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════════════ CUSTOMIZATION DRAWER (MOBILE) ═══════════════════ -->
+<div class="custom-drawer-overlay" id="custom-drawer-overlay" onclick="closeCustomizer()"></div>
+<div class="custom-drawer" id="custom-drawer">
+  <div class="custom-drawer-head">
+    <div class="custom-drawer-title">
+      <h3 id="cust-prod-name">Product Name</h3>
+      <span class="custom-drawer-sub" id="cust-prod-sub">Subtitle</span>
+    </div>
+    <button class="close-custom" onclick="closeCustomizer()"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+  <div class="custom-drawer-body">
+    <div id="cust-options-container"></div>
+  </div>
+  <div class="custom-drawer-foot">
+    <button class="cust-add-btn" id="cust-add-btn" onclick="confirmCustomAdd()">
+      <span data-mr="कार्टमध्ये जोडा" data-en="Add to Cart">Add to Cart</span>
+      <span class="cust-btn-price" id="cust-btn-price">₹0</span>
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════════════ CART DRAWER ═══════════════════ -->
+<div class="cart-drawer" id="cart-drawer">
+  <div class="cart-head">
+    <h3 data-mr="🛒 तुमची कार्ट" data-en="🛒 Your Cart">🛒 Your Cart</h3>
+    <button class="close-cart" onclick="toggleCart(false)"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+  <div class="cart-items-body" id="cart-items"></div>
+  <div class="cart-foot">
+    <div class="total-row">
+      <span class="lbl" data-mr="एकूण:" data-en="Total:">Total:</span>
+      <span class="val" id="cart-total">₹0</span>
+    </div>
+    <button class="chk-btn" onclick="openCheckout()" data-mr="ऑर्डर करा" data-en="Proceed to Checkout">Proceed to Checkout</button>
+  </div>
+</div>
+
+<!-- ═══════════════════ CHECKOUT MODAL ═══════════════════ -->
+<div class="modal-ov" id="checkout-modal">
+  <div class="modal-box">
+    <button class="close-modal" onclick="closeCheckout()"><i class="fa-solid fa-xmark"></i></button>
+    <h3 data-mr="ऑर्डर तपशील भरा" data-en="Complete Your Order">Complete Your Order</h3>
+    <form id="order-form" onsubmit="submitOrder(event)">
+      <div class="fg">
+        <label data-mr="पूर्ण नाव" data-en="Full Name">Full Name</label>
+        <input type="text" id="cust-name" class="fc" required>
+      </div>
+      <div class="fg">
+        <label data-mr="मोबाईल नंबर" data-en="Phone Number">Phone Number</label>
+        <input type="tel" id="cust-phone" class="fc" required>
+      </div>
+      <div class="fg">
+        <label data-mr="डिलिव्हरी पत्ता" data-en="Delivery Address">Delivery Address</label>
+        <textarea id="cust-address" class="fc" rows="3" required></textarea>
+      </div>
+      <div class="fg">
+        <label data-mr="पेमेंट पद्धत" data-en="Payment Method">Payment Method</label>
+        <div class="pay-grid">
+          <div>
+            <input type="radio" name="pay" id="pay-cod" value="COD" checked class="pt-input" onchange="toggleUPI(false)">
+            <label for="pay-cod" class="pt-label">
+              <i class="fa-solid fa-wallet"></i>
+              <span data-mr="कॅश ऑन डिलिव्हरी" data-en="Cash on Delivery">Cash on Delivery</span>
+            </label>
+          </div>
+          <div>
+            <input type="radio" name="pay" id="pay-upi" value="UPI" class="pt-input" onchange="toggleUPI(true)">
+            <label for="pay-upi" class="pt-label">
+              <i class="fa-solid fa-qrcode"></i>
+              <span data-mr="UPI / Google Pay" data-en="UPI / Google Pay">UPI / Google Pay</span>
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="upi-box" id="upi-box">
+        <div class="qi"><i class="fa-solid fa-qrcode"></i></div>
+        <div class="td" id="upi-total">Total: ₹0</div>
+        <div class="uid">UPI ID: 9459364555@okbizaxis</div>
+      </div>
+      <button type="submit" class="sub-btn" data-mr="ऑर्डर कन्फर्म करा" data-en="Confirm Order">Confirm Order</button>
+    </form>
+  </div>
+</div>
+
+<!-- ═══════════════════ SUCCESS MODAL ═══════════════════ -->
+<div class="modal-ov" id="success-modal">
+  <div class="modal-box">
+    <div class="success-body">
+      <div class="success-ico"><i class="fa-solid fa-circle-check"></i></div>
+      <h3 data-mr="ऑर्डर यशस्वी!" data-en="Order Placed!">Order Placed!</h3>
+      <p id="success-details"></p>
+      <button class="sub-btn" onclick="closeSuccess()" style="margin-top:1.5rem;" data-mr="बंद करा" data-en="Close">Close</button>
+    </div>
+  </div>
+</div>
+
+<script src="/app.js"></script>
+</body>
+</html>

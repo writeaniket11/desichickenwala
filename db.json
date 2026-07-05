@@ -1,0 +1,98 @@
+{
+  "products": [
+    {
+      "id": "gavran_desi",
+      "nameMr": "गावरान देशी चिकन",
+      "nameEn": "Gavran Desi Chicken",
+      "subMr": "खडकी पक्षी / गावठी पक्षी",
+      "subEn": "Khadaki / Gavathi Pakshi",
+      "ageMr": "१८०+ दिवस",
+      "ageEn": "180+ Days",
+      "priceLive": 550,
+      "priceCut": 760,
+      "priceRoast": 100,
+      "highlightMr": "१८०+ दिवस वाढवलेले — अस्सल गावरान चव, केमिकल व स्टेरॉइड मुक्त",
+      "highlightEn": "Raised 180+ days — authentic village taste, chemical & steroid free",
+      "images": [
+        "/uploads/desi_live.png",
+        "https://images.unsplash.com/photo-1604503468506-a8da13d82791?w=700&auto=format&fit=crop&q=80"
+      ]
+    },
+    {
+      "id": "gavran_supreme",
+      "nameMr": "गावरान सुप्रीम",
+      "nameEn": "Gavran Supreme",
+      "subMr": "सर्वोत्तम गुणवत्ता, अप्रतिम चव",
+      "subEn": "Supreme Quality, Supreme Taste",
+      "ageMr": "१०५+ दिवस",
+      "ageEn": "105+ Days",
+      "priceLive": 380,
+      "priceCut": 550,
+      "priceRoast": 100,
+      "highlightMr": "१०५+ दिवस नैसर्गिकरीत्या वाढवलेले — उत्तम गुणवत्ता",
+      "highlightEn": "Naturally raised 105+ days — maximum tenderness & taste",
+      "images": [
+        "/uploads/supreme_live.png",
+        "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=700&auto=format&fit=crop&q=80"
+      ]
+    },
+    {
+      "id": "gavran_power_grow",
+      "nameMr": "गावरान पॉवर ग्रो",
+      "nameEn": "Gavran Power Grow",
+      "subMr": "उत्तम आणि निरोगी पर्याय",
+      "subEn": "Better, Healthier, True to Nature",
+      "ageMr": "७५+ दिवस",
+      "ageEn": "75+ Days",
+      "priceLive": 300,
+      "priceCut": 420,
+      "priceRoast": 100,
+      "highlightMr": "७५+ दिवस, नैसर्गिक आहारावर वाढलेले — जलद वाढ, खरी गावरान चव",
+      "highlightEn": "Raised 75+ days on natural diet — fast-grow, true to nature",
+      "images": [
+        "/uploads/power_live.png",
+        "https://images.unsplash.com/photo-1598515214211-89d3e73ae83b?w=700&auto=format&fit=crop&q=80"
+      ]
+    }
+  ],
+  "stores": [
+    {
+      "id": "karad",
+      "nameMr": "कराड स्टोअर (कंपनी)",
+      "nameEn": "Karad Store (Company)",
+      "address": "PD Patil Garden, Front of Pawar Motors, Market Yard Rd, Near Kota Academy, Shaniwar Peth, Karad, Maharashtra 415110",
+      "owner": "Mr. Kiran Ravindra Koli",
+      "contact": "9529433254 / 8975309809",
+      "ownerPhone": "9459364555",
+      "gmb": "https://maps.app.goo.gl/91vLrpnUojwP9XdG6",
+      "timings": "8:00 AM – 8:00 PM (All Days)",
+      "status": "active",
+      "pinCodes": ["415110", "415111", "415112", "415113", "415114", "415115", "415116", "415117", "415118", "415119", "415124"],
+      "credentials": { "username": "karad_store", "password": "karad@2026" }
+    },
+    {
+      "id": "kolhapur",
+      "nameMr": "कोल्हापूर स्टोअर (फ्रँचाइजी)",
+      "nameEn": "Kolhapur Store (Franchise)",
+      "address": "Kolhapur, Maharashtra — Coming Soon",
+      "owner": "Franchise Partner",
+      "contact": "TBD",
+      "ownerPhone": "TBD",
+      "gmb": "",
+      "timings": "8:00 AM – 8:00 PM (All Days)",
+      "status": "coming_soon",
+      "pinCodes": [],
+      "credentials": { "username": "kolhapur_store", "password": "kolhapur@2026" }
+    }
+  ],
+  "admins": [
+    {
+      "id": "superadmin",
+      "username": "dcc_admin",
+      "password": "dcc@superadmin2026",
+      "role": "superadmin",
+      "name": "DCC Super Admin"
+    }
+  ],
+  "orders": []
+}

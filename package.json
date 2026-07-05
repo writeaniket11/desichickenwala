@@ -1,0 +1,14 @@
+{
+  "name": "desichickenwala",
+  "version": "1.0.0",
+  "description": "Premium e-commerce storefront and admin dashboard for Desi Chickenwala",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.1",
+    "multer": "^1.4.5-lts.1"
+  }
+}
