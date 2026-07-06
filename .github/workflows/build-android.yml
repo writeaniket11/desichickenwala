@@ -41,7 +41,14 @@ jobs:
           chmod +x android/gradlew
 
       - name: Sync Web Assets into Android
-        run: npx cap sync android --verbose
+        run: npx cap sync android --verbose > cap_sync_log.txt 2>&1 || (cat cap_sync_log.txt && exit 1)
+
+      - name: Upload Sync Log on Failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Capacitor-Sync-Log
+          path: cap_sync_log.txt
 
       - name: Build Release APK
         run: |
