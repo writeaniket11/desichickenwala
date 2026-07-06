@@ -57,14 +57,14 @@ jobs:
           git push origin HEAD:main
         continue-on-error: true
 
-      - name: Build Release APK
+      - name: Build Debug APK
         run: |
           cd android
-          ./gradlew assembleRelease --no-daemon
+          ./gradlew assembleDebug --no-daemon
 
       - name: Upload APK as Build Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: DesiChickenwala-Release-APK
-          path: android/app/build/outputs/apk/release/*.apk
+          name: DesiChickenwala-Debug-APK
+          path: android/app/build/outputs/apk/debug/*.apk
           retention-days: 7
