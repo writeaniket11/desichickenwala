@@ -35,11 +35,11 @@ jobs:
 
 
 
-      - name: Sync Web Assets into Android
-        run: npx cap sync android --verbose
-
       - name: Grant Gradlew Execute Permission
         run: chmod +x android/gradlew
+
+      - name: Sync Web Assets into Android
+        run: npx cap sync android --verbose
 
       - name: Build Release APK
         run: |
