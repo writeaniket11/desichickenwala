@@ -1,393 +1,933 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script>
+    if (sessionStorage.getItem('adminLoggedIn') !== 'true') {
+      window.location.href = '/login.html';
+    }
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard | Desi Chickenwala Control Panel</title>
-  <link rel="stylesheet" href="/style.css?v=2">
+  <title>Corporate Admin Console | Desi Chickenwala</title>
+  <link rel="stylesheet" href="/style.css?v=15">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    :root {
-      --border-color: rgba(245, 158, 11, 0.22);
-      --text-dark: #1C0A00;
-      --text-light: #704F37;
-      --sunrise-orange: #EA580C;
-      --sunrise-orange-hover: #C2410C;
-      --error-red: #DC2626;
+    body {
+      background: #F8F6F0;
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #2E1A08;
+      display: flex;
+      min-height: 100vh;
     }
-    /* Custom admin panel modifications */
-    .admin-container {
-      max-width: 1200px;
-      margin: 2rem auto;
-      padding: 0 1rem;
+    
+    /* Sidebar Navigation */
+    .sidebar {
+      width: 260px;
+      background: #1C0A00;
+      color: #FFF;
+      display: flex;
+      flex-direction: column;
+      padding: 1.5rem 0;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 100;
+      box-shadow: 4px 0 15px rgba(0,0,0,0.15);
     }
-    .admin-header {
-      background: white;
-      padding: 1.5rem;
-      border-radius: 12px;
-      border: 1px solid var(--border-color);
-      margin-bottom: 2rem;
+    .sidebar-header {
+      padding: 0 1.5rem 1.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .sidebar-logo {
+      height: 48px;
+      border-radius: 6px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .sidebar-title {
+      display: flex;
+      flex-direction: column;
+    }
+    .sidebar-title h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.15rem;
+      margin: 0;
+      letter-spacing: 0.5px;
+      color: var(--orange-l);
+    }
+    .sidebar-title span {
+      font-size: 0.68rem;
+      color: rgba(255,255,255,0.5);
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+    .sidebar-menu {
+      list-style: none;
+      padding: 1.5rem 0;
+      margin: 0;
+      flex-grow: 1;
+    }
+    .menu-item {
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: all 0.22s;
+      border-left: 4px solid transparent;
+    }
+    .menu-item:hover, .menu-item.active {
+      color: #FFF;
+      background: rgba(255, 255, 255, 0.05);
+      border-left-color: var(--orange);
+    }
+    .menu-item i {
+      font-size: 1.1rem;
+      width: 20px;
+    }
+    .sidebar-footer {
+      padding: 1rem 1.5rem;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+    .admin-profile {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      margin-bottom: 1rem;
+    }
+    .admin-avatar {
+      width: 36px;
+      height: 36px;
+      background: var(--orange);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.95rem;
+    }
+    .admin-info {
+      display: flex;
+      flex-direction: column;
+    }
+    .admin-name {
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+    .admin-role {
+      font-size: 0.68rem;
+      color: rgba(255,255,255,0.4);
+    }
+    .logout-btn {
+      width: 100%;
+      padding: 10px;
+      background: #DC2626;
+      color: #FFF;
+      border: none;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: background 0.22s;
+    }
+    .logout-btn:hover {
+      background: #B91C1C;
+    }
+
+    /* Main Content Area */
+    .main-content {
+      margin-left: 260px;
+      flex-grow: 1;
+      padding: 2.25rem 3rem;
+      min-width: 0; /* Prevents flex items from overflowing */
+    }
+    
+    /* Header controls */
+    .content-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      margin-bottom: 2rem;
+      border-bottom: 1.5px solid rgba(46, 26, 8, 0.05);
+      padding-bottom: 1rem;
     }
-    .admin-sections {
+    .header-title h1 {
+      font-size: 1.85rem;
+      font-weight: 900;
+      color: #1C0A00;
+      margin: 0;
+    }
+    .header-title p {
+      font-size: 0.84rem;
+      color: var(--text-soft);
+      margin: 0.2rem 0 0;
+      font-weight: 500;
+    }
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .btn-primary-action {
+      background: var(--orange);
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 4px 10px rgba(234, 88, 12, 0.15);
+      transition: all 0.22s;
+    }
+    .btn-primary-action:hover {
+      background: var(--orange-h);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 14px rgba(234, 88, 12, 0.25);
+    }
+    .btn-primary-action i {
+      font-size: 0.95rem;
+    }
+    
+    /* KPI Stats Cards */
+    .kpi-row {
       display: grid;
-      grid-template-columns: 1fr;
-      gap: 2.5rem;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+      margin-bottom: 2.25rem;
     }
-    @media (min-width: 992px) {
-      .admin-sections {
-        grid-template-columns: 3fr 2fr;
-      }
+    .kpi-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 15px rgba(46, 26, 8, 0.02);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: transform 0.22s;
     }
-    .admin-card {
-      background: white;
-      border-radius: 16px;
-      border: 1px solid var(--border-color);
-      box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+    .kpi-card:hover {
+      transform: translateY(-2px);
+    }
+    .kpi-details {
+      display: flex;
+      flex-direction: column;
+    }
+    .kpi-val {
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--text);
+      line-height: 1.1;
+    }
+    .kpi-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-soft);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 0.4rem;
+    }
+    .kpi-icon-wrap {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+    }
+    .kpi-card.orders .kpi-icon-wrap { background: #FEF3C7; color: var(--gold); }
+    .kpi-card.pending .kpi-icon-wrap { background: #FFF1F2; color: #E11D48; }
+    .kpi-card.stores .kpi-icon-wrap { background: #F0F7EC; color: var(--green); }
+    .kpi-card.leads .kpi-icon-wrap { background: #E0F2FE; color: #0284C7; }
+
+    /* Dashboard Panels */
+    .panel {
+      display: none;
+      animation: tabFadeIn 0.3s ease-out;
+    }
+    .panel.active {
+      display: block;
+    }
+    @keyframes tabFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Content Cards */
+    .content-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: 0 4px 15px rgba(46, 26, 8, 0.02);
       overflow: hidden;
       margin-bottom: 2rem;
     }
-    .admin-card-header {
-      background: #F9F7F1;
-      padding: 1.25rem;
-      border-bottom: 1px solid var(--border-color);
+    .card-header-clean {
+      padding: 1.25rem 1.75rem;
+      border-bottom: 1.5px solid rgba(46, 26, 8, 0.05);
+      background: #FAF9F6;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-    .admin-card-header h3 {
-      font-size: 1.2rem;
-      color: var(--text-dark);
+    .card-header-clean h3 {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--text);
+      margin: 0;
       display: flex;
       align-items: center;
       gap: 0.5rem;
     }
-    .admin-card-body {
-      padding: 1.5rem;
+    .card-body-clean {
+      padding: 1.75rem;
     }
-    /* Table styling for orders, products and stores */
-    .admin-table-container {
+
+    /* Tables styles */
+    .table-container {
       overflow-x: auto;
     }
-    .admin-table {
+    .corporate-table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 1rem;
       text-align: left;
     }
-    .admin-table th, .admin-table td {
-      padding: 12px;
-      border-bottom: 1px solid var(--border-color);
-      font-size: 0.9rem;
+    .corporate-table th, .corporate-table td {
+      padding: 14px 18px;
+      font-size: 0.88rem;
+      border-bottom: 1px solid rgba(46, 26, 8, 0.06);
     }
-    .admin-table th {
-      background: #F9F7F1;
+    .corporate-table th {
       font-weight: 700;
-      color: var(--text-dark);
+      color: var(--text-soft);
+      background: #FAF9F6;
+      text-transform: uppercase;
+      font-size: 0.72rem;
+      letter-spacing: 0.5px;
     }
+    .corporate-table tr:hover td {
+      background: rgba(234, 88, 12, 0.02);
+    }
+    .corporate-table tr:last-child td {
+      border-bottom: none;
+    }
+    
+    /* Badges */
     .status-badge {
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
       padding: 4px 10px;
-      border-radius: 20px;
-      font-size: 0.75rem;
+      border-radius: 30px;
+      font-size: 0.72rem;
       font-weight: 700;
       text-transform: uppercase;
     }
-    .status-Pending { background: #FFE082; color: #E65100; }
-    .status-Preparing { background: #B3E5FC; color: #0277BD; }
-    .status-Dispatched { background: #E1BEE7; color: #6A1B9A; }
-    .status-Delivered { background: #C8E6C9; color: #2E7D32; }
-    .status-Cancelled { background: #FFCDD2; color: #C62828; }
+    .status-Pending   { background: #FEF3C7; color: #D97706; }
+    .status-Preparing { background: #E0F2FE; color: #0284C7; }
+    .status-Dispatched{ background: #F3E8FF; color: #7E22CE; }
+    .status-Delivered { background: #DCFCE7; color: #15803D; }
+    .status-Cancelled { background: #FEE2E2; color: #B91C1C; }
+    .status-New       { background: #FEF3C7; color: #D97706; }
+    .status-Contacted { background: #DCFCE7; color: #15803D; }
+    
+    /* Select input style in table */
+    .status-select {
+      border: 1.5px solid var(--border);
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.8rem;
+      outline: none;
+      background: var(--bg-soft);
+      color: var(--text);
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.22s;
+    }
+    .status-select:focus {
+      border-color: var(--orange);
+      background: var(--white);
+    }
 
-    .action-btn {
+    /* Modals & Forms controls */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(28, 10, 0, 0.5);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .modal-card {
+      background: var(--white);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 580px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.18);
+      overflow: hidden;
+      transform: translateY(20px);
+      transition: transform 0.3s ease;
+    }
+    .modal-overlay.open .modal-card {
+      transform: translateY(0);
+    }
+    .modal-header {
+      padding: 1.25rem 1.75rem;
+      background: #FAF9F6;
+      border-bottom: 1.5px solid rgba(46, 26, 8, 0.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-header h3 {
+      font-size: 1.15rem;
+      font-weight: 900;
+      color: var(--text);
+      margin: 0;
+    }
+    .close-modal-btn {
       background: none;
       border: none;
+      font-size: 1.25rem;
+      color: var(--text-soft);
       cursor: pointer;
-      font-size: 1rem;
-      padding: 4px;
-      transition: color 0.2s;
+      padding: 0;
     }
-    .action-btn.edit { color: var(--sunrise-orange); }
-    .action-btn.delete { color: var(--error-red); }
-
-    /* Admin forms styles */
-    .admin-form-group {
-      margin-bottom: 1rem;
+    .close-modal-btn:hover {
+      color: var(--orange);
     }
-    .admin-form-group label {
+    .modal-body {
+      padding: 2rem 1.75rem;
+      max-height: 70vh;
+      overflow-y: auto;
+    }
+    
+    /* Form fields styling */
+    .form-group-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      margin-bottom: 1.15rem;
+    }
+    .form-group-clean {
+      margin-bottom: 1.15rem;
+    }
+    .form-group-clean label {
       display: block;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       font-weight: 700;
-      margin-bottom: 0.25rem;
-      color: var(--text-dark);
+      color: var(--text-mid);
+      margin-bottom: 0.4rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
-    .admin-form-control {
+    .form-control-clean {
       width: 100%;
-      padding: 8px 12px;
-      border: 1px solid var(--border-color);
+      padding: 10px 12px;
+      border: 2px solid var(--border);
       border-radius: 6px;
+      font-size: 0.88rem;
       outline: none;
-      font-size: 0.9rem;
+      background: var(--bg-soft);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      transition: all 0.22s;
     }
-    .admin-form-control:focus {
-      border-color: var(--sunrise-orange);
+    .form-control-clean:focus {
+      border-color: var(--orange);
+      background: var(--white);
+      box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.08);
     }
-    .admin-submit-btn {
-      background: var(--sunrise-orange);
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 8px;
+    .form-actions-clean {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.85rem;
+      margin-top: 1.5rem;
+    }
+    .btn-secondary {
+      background: var(--bg-soft);
+      border: 1.5px solid var(--border);
+      color: var(--text-soft);
+      padding: 10px 18px;
+      border-radius: 6px;
       font-weight: 700;
       cursor: pointer;
-      transition: background 0.3s;
-      width: 100%;
-      margin-top: 1rem;
+      font-size: 0.85rem;
     }
-    .admin-submit-btn:hover {
-      background: var(--sunrise-orange-hover);
+    .btn-secondary:hover {
+      background: var(--white);
+      color: var(--text);
     }
-    .badge-counter {
-      background: var(--sunrise-orange);
-      color: white;
-      font-size: 0.75rem;
-      padding: 2px 8px;
-      border-radius: 12px;
+    
+    /* Utility Action Buttons */
+    .action-icon-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.22s;
+      margin-right: 0.25rem;
+    }
+    .action-icon-btn.edit { background: #E0F2FE; color: #0284C7; }
+    .action-icon-btn.edit:hover { background: #BAE6FD; }
+    .action-icon-btn.delete { background: #FEE2E2; color: #DC2626; }
+    .action-icon-btn.delete:hover { background: #FCA5A5; }
+    
+    /* Responsive overrides */
+    @media (max-width: 960px) {
+      .kpi-row {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (max-width: 640px) {
+      .kpi-row {
+        grid-template-columns: 1fr;
+      }
+      .form-group-row {
+        grid-template-columns: 1fr;
+        gap: 0;
+      }
     }
   </style>
 </head>
 <body>
 
-  <!-- Header Navigation -->
-  <header>
-    <div class="nav-container">
-      <div class="logo-section">
-        <img src="/logo.jpg" alt="Logo" class="logo-img">
-        <div class="logo-text">
-
-          <h1>Desi Chickenwala Admin</h1>
-          <p>Control Center & Store Management</p>
-        </div>
-      </div>
-      <div class="nav-controls">
-        <a href="/" class="admin-link">
-          <i class="fa-solid fa-store"></i> Back to Storefront
-        </a>
+  <!-- SIDEBAR NAVIGATION -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <img src="/logo.jpg" alt="Desi Chickenwala Logo" class="sidebar-logo">
+      <div class="sidebar-title">
+        <h2>DCC Admin</h2>
+        <span>Control Console</span>
       </div>
     </div>
-  </header>
-
-  <div class="admin-container">
     
-    <!-- Admin Hero stats banner -->
-    <div class="admin-header">
-      <div>
-        <h2>Welcome to Desi Chickenwala Admin Panel</h2>
-        <p style="color: var(--text-light); font-size: 0.9rem;">Manage incoming customer orders, add stores, and update product catalog dynamically.</p>
+    <nav style="flex-grow: 1;">
+      <ul style="list-style: none; padding: 0; margin: 0;">
+        <li>
+          <a class="menu-item active" id="menu-overview" onclick="switchPanel('overview')">
+            <i class="fa-solid fa-chart-line"></i> Orders Overview
+          </a>
+        </li>
+        <li>
+          <a class="menu-item" id="menu-stores" onclick="switchPanel('stores')">
+            <i class="fa-solid fa-shop"></i> Store Locations
+          </a>
+        </li>
+        <li>
+          <a class="menu-item" id="menu-products" onclick="switchPanel('products')">
+            <i class="fa-solid fa-drumstick-bite"></i> Product Manager
+          </a>
+        </li>
+        <li>
+          <a class="menu-item" id="menu-leads" onclick="switchPanel('leads')">
+            <i class="fa-solid fa-users"></i> Franchise Leads
+          </a>
+        </li>
+      </ul>
+    </nav>
+    
+    <div class="sidebar-footer">
+      <div class="admin-profile">
+        <div class="admin-avatar" id="avatar-letter">A</div>
+        <div class="admin-info">
+          <span class="admin-name" id="admin-display-name">DCC Admin</span>
+          <span class="admin-role">Super Administrator</span>
+        </div>
+      </div>
+      <button class="logout-btn" onclick="handleLogout()">
+        <i class="fa-solid fa-right-from-bracket"></i> Log Out
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT AREA -->
+  <main class="main-content">
+    
+    <!-- Content Header -->
+    <div class="content-header">
+      <div class="header-title">
+        <h1 id="panel-title-text">Orders Overview</h1>
+        <p id="panel-desc-text">Manage customer orders and dispatch updates across all stores.</p>
+      </div>
+      <div class="header-actions" id="panel-actions-container">
+        <!-- Dynamic actions based on active panel -->
       </div>
     </div>
 
-    <div class="admin-sections">
-      
-      <!-- LEFT SECTION: Orders & Logs -->
-      <div>
-        <!-- Order List Card -->
-        <div class="admin-card">
-          <div class="admin-card-header">
-            <h3><i class="fa-solid fa-receipt"></i> Customer Orders <span class="badge-counter" id="orders-count">0</span></h3>
-          </div>
-          <div class="admin-card-body">
-            <div class="admin-table-container">
-              <table class="admin-table">
-                <thead>
-                  <tr>
-                    <th>Order ID</th>
-                    <th>Customer Info</th>
-                    <th>Routed Store</th>
-                    <th>Items Purchased</th>
-                    <th>Total</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody id="orders-tbody">
-                  <!-- Load dynamic orders -->
-                </tbody>
-              </table>
-            </div>
-          </div>
+    <!-- KPI Stats Row -->
+    <section class="kpi-row">
+      <div class="kpi-card orders">
+        <div class="kpi-details">
+          <span class="kpi-val" id="kpi-total-orders">0</span>
+          <span class="kpi-label">Total Orders</span>
         </div>
+        <div class="kpi-icon-wrap"><i class="fa-solid fa-basket-shopping"></i></div>
+      </div>
+      <div class="kpi-card pending">
+        <div class="kpi-details">
+          <span class="kpi-val" id="kpi-pending-orders">0</span>
+          <span class="kpi-label">Pending</span>
+        </div>
+        <div class="kpi-icon-wrap"><i class="fa-solid fa-clock"></i></div>
+      </div>
+      <div class="kpi-card stores">
+        <div class="kpi-details">
+          <span class="kpi-val" id="kpi-active-stores">0</span>
+          <span class="kpi-label">Active Stores</span>
+        </div>
+        <div class="kpi-icon-wrap"><i class="fa-solid fa-store"></i></div>
+      </div>
+      <div class="kpi-card leads">
+        <div class="kpi-details">
+          <span class="kpi-val" id="kpi-total-leads">0</span>
+          <span class="kpi-label">Franchise Leads</span>
+        </div>
+        <div class="kpi-icon-wrap"><i class="fa-solid fa-users"></i></div>
+      </div>
+    </section>
 
-        <!-- Store List Card -->
-        <div class="admin-card">
-          <div class="admin-card-header">
-            <h3><i class="fa-solid fa-shop"></i> Managed Store Locations</h3>
-          </div>
-          <div class="admin-card-body">
-            <div class="admin-table-container">
-              <table class="admin-table">
-                <thead>
-                  <tr>
-                    <th>Store Name</th>
-                    <th>Address</th>
-                    <th>Contact</th>
-                    <th>Coordinates (Lat/Lng)</th>
-                    <th>Geofence</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody id="stores-tbody">
-                  <!-- Load dynamic stores -->
-                </tbody>
-              </table>
-            </div>
+    <!-- PANEL: OVERVIEW -->
+    <div class="panel active" id="panel-overview">
+      <div class="content-card">
+        <div class="card-header-clean">
+          <h3><i class="fa-solid fa-list-check"></i> Customer Orders List</h3>
+        </div>
+        <div class="card-body-clean">
+          <div class="table-container">
+            <table class="corporate-table">
+              <thead>
+                <tr>
+                  <th>Order Info</th>
+                  <th>Customer Details</th>
+                  <th>Order Items</th>
+                  <th>Total Amount</th>
+                  <th>Assigned Store</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="orders-tbody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
-
-      <!-- RIGHT SECTION: Forms Control -->
-      <div>
-        
-        <!-- Product Manager Form -->
-        <div class="admin-card">
-          <div class="admin-card-header">
-            <h3 id="product-form-title"><i class="fa-solid fa-folder-plus"></i> Add / Edit Product</h3>
-            <button class="lang-btn" style="padding: 2px 10px; font-size: 0.75rem;" onclick="resetProductForm()">Clear Form</button>
-          </div>
-          <div class="admin-card-body">
-            <form id="product-form" onsubmit="saveProduct(event)">
-              <input type="hidden" id="prod-id" name="id">
-              
-              <div class="admin-form-group">
-                <label for="prod-name-en">Product Name (English)</label>
-                <input type="text" id="prod-name-en" name="nameEn" class="admin-form-control" placeholder="e.g. Gavran Supreme" required>
-              </div>
-              <div class="admin-form-group">
-                <label for="prod-name-mr">Product Name (मराठी)</label>
-                <input type="text" id="prod-name-mr" name="nameMr" class="admin-form-control" placeholder="उदा. गावरान सुप्रीम" required>
-              </div>
-
-              <div class="admin-form-group">
-                <label for="prod-sub-en">Subtitle / Categories (English)</label>
-                <input type="text" id="prod-sub-en" name="subEn" class="admin-form-control" placeholder="e.g. Supreme Quality, Supreme Taste" required>
-              </div>
-              <div class="admin-form-group">
-                <label for="prod-sub-mr">Subtitle / Categories (मराठी)</label>
-                <input type="text" id="prod-sub-mr" name="subMr" class="admin-form-control" placeholder="उदा. उत्कृष्ट गुणवत्ता, अप्रतिम चव" required>
-              </div>
-
-              <div class="radio-tiles" style="margin-bottom: 1rem;">
-                <div class="admin-form-group">
-                  <label for="prod-age-en">Age (English)</label>
-                  <input type="text" id="prod-age-en" name="ageEn" class="admin-form-control" placeholder="e.g. 105+ Days" required>
-                </div>
-                <div class="admin-form-group">
-                  <label for="prod-age-mr">Age (मराठी)</label>
-                  <input type="text" id="prod-age-mr" name="ageMr" class="admin-form-control" placeholder="उदा. १०५+ दिवस" required>
-                </div>
-              </div>
-
-              <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem;">
-                <div class="admin-form-group">
-                  <label for="prod-price-live">Live Price (₹)</label>
-                  <input type="number" id="prod-price-live" name="priceLive" class="admin-form-control" required>
-                </div>
-                <div class="admin-form-group">
-                  <label for="prod-price-cut">Cutting Price (₹)</label>
-                  <input type="number" id="prod-price-cut" name="priceCut" class="admin-form-control" required>
-                </div>
-                <div class="admin-form-group">
-                  <label for="prod-price-roast">Roasting Add-on (₹)</label>
-                  <input type="number" id="prod-price-roast" name="priceRoast" class="admin-form-control" required>
-                </div>
-              </div>
-
-              <div class="admin-form-group">
-                <label for="prod-highlight-en">Description Highlight (English)</label>
-                <textarea id="prod-highlight-en" name="highlightEn" class="admin-form-control" rows="2" required></textarea>
-              </div>
-              <div class="admin-form-group">
-                <label for="prod-highlight-mr">Description Highlight (मराठी)</label>
-                <textarea id="prod-highlight-mr" name="highlightMr" class="admin-form-control" rows="2" required></textarea>
-              </div>
-
-              <div class="admin-form-group">
-                <label for="prod-images">Upload Product Images (Max 2: Live + Meat Scrollable)</label>
-                <input type="file" id="prod-images" name="productImages" class="admin-form-control" multiple accept="image/*">
-                <p style="font-size: 0.7rem; color: var(--text-light); margin-top: 0.25rem;">Upload new files to overwrite product images.</p>
-              </div>
-
-              <button type="submit" class="admin-submit-btn">Save Product</button>
-            </form>
-          </div>
-        </div>
-
-        <!-- Store Location Form -->
-        <div class="admin-card">
-          <div class="admin-card-header">
-            <h3><i class="fa-solid fa-map-pin"></i> Add Franchise Store</h3>
-          </div>
-          <div class="admin-card-body">
-            <form id="store-form" onsubmit="saveStore(event)">
-              <input type="hidden" id="store-id">
-              
-              <div class="admin-form-group">
-                <label for="store-name-en">Store Name (English)</label>
-                <input type="text" id="store-name-en" class="admin-form-control" placeholder="e.g. Kolhapur Store" required>
-              </div>
-              <div class="admin-form-group">
-                <label for="store-name-mr">Store Name (मराठी)</label>
-                <input type="text" id="store-name-mr" class="admin-form-control" placeholder="उदा. कोल्हापूर शाखा" required>
-              </div>
-              <div class="admin-form-group">
-                <label for="store-address">Full Address</label>
-                <input type="text" id="store-address" class="admin-form-control" required>
-              </div>
-              
-              <div class="radio-tiles">
-                <div class="admin-form-group">
-                  <label for="store-owner">Owner Name</label>
-                  <input type="text" id="store-owner" class="admin-form-control" required>
-                </div>
-                <div class="admin-form-group">
-                  <label for="store-owner-phone">Owner Phone</label>
-                  <input type="text" id="store-owner-phone" class="admin-form-control" required>
-                </div>
-              </div>
-
-              <div class="admin-form-group">
-                <label for="store-contact">Shop Contacts (Comma Separated)</label>
-                <input type="text" id="store-contact" class="admin-form-control" placeholder="e.g. 9876543210, 9876543211" required>
-              </div>
-
-              <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem;">
-                <div class="admin-form-group">
-                  <label for="store-lat">Latitude</label>
-                  <input type="number" step="any" id="store-lat" class="admin-form-control" required>
-                </div>
-                <div class="admin-form-group">
-                  <label for="store-lng">Longitude</label>
-                  <input type="number" step="any" id="store-lng" class="admin-form-control" required>
-                </div>
-                <div class="admin-form-group">
-                  <label for="store-radius">Radius (km)</label>
-                  <input type="number" id="store-radius" class="admin-form-control" value="5" required>
-                </div>
-              </div>
-
-              <button type="submit" class="admin-submit-btn">Save Store Location</button>
-            </form>
-          </div>
-        </div>
-
-      </div>
-
     </div>
 
+    <!-- PANEL: STORES -->
+    <div class="panel" id="panel-stores">
+      <div class="content-card">
+        <div class="card-header-clean">
+          <h3><i class="fa-solid fa-shop"></i> Store Locations</h3>
+        </div>
+        <div class="card-body-clean">
+          <div class="table-container">
+            <table class="corporate-table">
+              <thead>
+                <tr>
+                  <th>Store Details</th>
+                  <th>Address</th>
+                  <th>Owner / Contact</th>
+                  <th>Coordinates & Geofence</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="stores-tbody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL: PRODUCTS -->
+    <div class="panel" id="panel-products">
+      <div class="content-card">
+        <div class="card-header-clean">
+          <h3><i class="fa-solid fa-box-open"></i> Menu Products</h3>
+        </div>
+        <div class="card-body-clean">
+          <div class="table-container">
+            <table class="corporate-table">
+              <thead>
+                <tr>
+                  <th>Image</th>
+                  <th>Product Info</th>
+                  <th>Age Limit</th>
+                  <th>Live Price</th>
+                  <th>Dressed Price</th>
+                  <th>Roast Premium</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="products-tbody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL: LEADS -->
+    <div class="panel" id="panel-leads">
+      <div class="content-card">
+        <div class="card-header-clean">
+          <h3><i class="fa-solid fa-users"></i> Franchise Inquiry Leads</h3>
+        </div>
+        <div class="card-body-clean">
+          <div class="table-container">
+            <table class="corporate-table">
+              <thead>
+                <tr>
+                  <th>Inquirer Name</th>
+                  <th>Phone Number</th>
+                  <th>Proposed Location</th>
+                  <th>Investment Budget</th>
+                  <th>Date Submitted</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="leads-tbody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- MODAL: PRODUCT FORM -->
+  <div class="modal-overlay" id="product-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="product-modal-title">Add New Product</h3>
+        <button class="close-modal-btn" onclick="closeProductModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <form id="product-form" onsubmit="saveProduct(event)">
+          <input type="hidden" id="prod-id">
+          
+          <div class="form-group-row">
+            <div class="form-group-clean">
+              <label>Product Name (English)</label>
+              <input type="text" id="prod-name-en" class="form-control-clean" required placeholder="e.g. Gavran Supreme">
+            </div>
+            <div class="form-group-clean">
+              <label>Product Name (मराठी)</label>
+              <input type="text" id="prod-name-mr" class="form-control-clean" required placeholder="उदा. गावरान सुप्रीम">
+            </div>
+          </div>
+
+          <div class="form-group-row">
+            <div class="form-group-clean">
+              <label>Subtitle (English)</label>
+              <input type="text" id="prod-sub-en" class="form-control-clean" required placeholder="e.g. Supreme Quality">
+            </div>
+            <div class="form-group-clean">
+              <label>Subtitle (मराठी)</label>
+              <input type="text" id="prod-sub-mr" class="form-control-clean" required placeholder="उदा. सर्वोत्तम गुणवत्ता">
+            </div>
+          </div>
+
+          <div class="form-group-row">
+            <div class="form-group-clean">
+              <label>Age Limit (English)</label>
+              <input type="text" id="prod-age-en" class="form-control-clean" required placeholder="e.g. 105+ Days">
+            </div>
+            <div class="form-group-clean">
+              <label>Age Limit (मराठी)</label>
+              <input type="text" id="prod-age-mr" class="form-control-clean" required placeholder="उदा. १०५+ दिवस">
+            </div>
+          </div>
+
+          <div class="form-group-row">
+            <div class="form-group-clean">
+              <label>Live Price (₹ per kg)</label>
+              <input type="number" id="prod-price-live" class="form-control-clean" required placeholder="e.g. 380">
+            </div>
+            <div class="form-group-clean">
+              <label>Dressed/Clean Cut Price (₹ per kg)</label>
+              <input type="number" id="prod-price-cut" class="form-control-clean" required placeholder="e.g. 550">
+            </div>
+          </div>
+
+          <div class="form-group-clean">
+            <label>Roast Customization Premium (₹)</label>
+            <input type="number" id="prod-price-roast" class="form-control-clean" required placeholder="e.g. 100">
+          </div>
+
+          <div class="form-group-clean">
+            <label>Highlight description (English)</label>
+            <input type="text" id="prod-hl-en" class="form-control-clean" required placeholder="Bullet feature description in English">
+          </div>
+
+          <div class="form-group-clean">
+            <label>Highlight description (मराठी)</label>
+            <input type="text" id="prod-hl-mr" class="form-control-clean" required placeholder="वैशिष्ट्य वर्णन मराठीत">
+          </div>
+
+          <div class="form-group-clean">
+            <label>Upload Images (Max 2)</label>
+            <input type="file" id="prod-images" class="form-control-clean" multiple accept="image/*">
+            <small style="color:var(--text-soft);margin-top:0.35rem;display:block;">Select up to 2 images. Leave empty to keep existing images.</small>
+          </div>
+
+          <div class="form-actions-clean">
+            <button type="button" class="btn-secondary" onclick="closeProductModal()">Cancel</button>
+            <button type="submit" class="btn-primary-action">Save Product</button>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
 
-  <script src="/admin.js"></script>
+  <!-- MODAL: STORE FORM -->
+  <div class="modal-overlay" id="store-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="store-modal-title">Add Store Location</h3>
+        <button class="close-modal-btn" onclick="closeStoreModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <form id="store-form" onsubmit="saveStore(event)">
+          <input type="hidden" id="store-id">
+
+          <div class="form-group-row">
+            <div class="form-group-clean">
+              <label>Store Name (English)</label>
+              <input type="text" id="store-name-en" class="form-control-clean" required placeholder="e.g. Karad Store">
+            </div>
+            <div class="form-group-clean">
+              <label>Store Name (मराठी)</label>
+              <input type="text" id="store-name-mr" class="form-control-clean" required placeholder="उदा. कराड स्टोअर">
+            </div>
+          </div>
+
+          <div class="form-group-clean">
+            <label>Full Address</label>
+            <input type="text" id="store-address" class="form-control-clean" required placeholder="Enter full postal address">
+          </div>
+
+          <div class="form-group-row">
+            <div class="form-group-clean">
+              <label>Owner Name</label>
+              <input type="text" id="store-owner" class="form-control-clean" required placeholder="e.g. Kiran Koli">
+            </div>
+            <div class="form-group-clean">
+              <label>Timings Description</label>
+              <input type="text" id="store-timings" class="form-control-clean" required placeholder="e.g. 8:00 AM – 8:00 PM">
+            </div>
+          </div>
+
+          <div class="form-group-row">
+            <div class="form-group-clean">
+              <label>Store Contact Phone</label>
+              <input type="text" id="store-contact" class="form-control-clean" required placeholder="Contact numbers">
+            </div>
+            <div class="form-group-clean">
+              <label>Owner Mobile (Pincode/Delivery Alerts)</label>
+              <input type="text" id="store-owner-phone" class="form-control-clean" required placeholder="Owner alerts phone">
+            </div>
+          </div>
+
+          <div class="form-group-row">
+            <div class="form-group-clean">
+              <label>Latitude (Store Center)</label>
+              <input type="number" step="any" id="store-lat" class="form-control-clean" required placeholder="e.g. 17.2894">
+            </div>
+            <div class="form-group-clean">
+              <label>Longitude (Store Center)</label>
+              <input type="number" step="any" id="store-lng" class="form-control-clean" required placeholder="e.g. 74.1925">
+            </div>
+          </div>
+
+          <div class="form-group-row">
+            <div class="form-group-clean">
+              <label>Delivery Radius Limit (km)</label>
+              <input type="number" step="any" id="store-radius" class="form-control-clean" required placeholder="e.g. 5">
+            </div>
+            <div class="form-group-clean">
+              <label>GMB Map Link URL</label>
+              <input type="url" id="store-gmb" class="form-control-clean" placeholder="Google Maps Location URL">
+            </div>
+          </div>
+
+          <div class="form-group-clean">
+            <label>Service Area Pincodes (Comma separated)</label>
+            <input type="text" id="store-pins" class="form-control-clean" required placeholder="e.g. 415110, 415111, 415112">
+            <small style="color:var(--text-soft);margin-top:0.35rem;display:block;">Separate each pincode with a comma.</small>
+          </div>
+
+          <div class="form-group-row">
+            <div class="form-group-clean">
+              <label>Portal Partner Username</label>
+              <input type="text" id="store-user" class="form-control-clean" required placeholder="e.g. karad_store">
+            </div>
+            <div class="form-group-clean">
+              <label>Portal Partner Password</label>
+              <input type="text" id="store-pass" class="form-control-clean" required placeholder="e.g. karad@2026">
+            </div>
+          </div>
+
+          <div class="form-group-clean">
+            <label>Store Status</label>
+            <select id="store-status" class="form-control-clean" required>
+              <option value="active">Active & Open</option>
+              <option value="paused">Temporarily Paused/Closed</option>
+              <option value="coming_soon">Coming Soon</option>
+            </select>
+          </div>
+
+          <div class="form-actions-clean">
+            <button type="button" class="btn-secondary" onclick="closeStoreModal()">Cancel</button>
+            <button type="submit" class="btn-primary-action">Save Location</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="/admin.js?v=4"></script>
 </body>
 </html>

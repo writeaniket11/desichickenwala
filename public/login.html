@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Partner Portal Login | Desi Chickenwala</title>
+  <link rel="stylesheet" href="/style.css?v=15">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      background: #FFFBF5;
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      margin: 0;
+    }
+    .login-container {
+      width: 100%;
+      max-width: 440px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--r-l);
+      box-shadow: 0 20px 50px rgba(46, 26, 8, 0.06);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      animation: fadeIn 0.4s ease-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .login-header {
+      padding: 2rem 2rem 1.5rem;
+      text-align: center;
+      border-bottom: 1.5px solid rgba(46, 26, 8, 0.05);
+      background: linear-gradient(135deg, rgba(255, 237, 213, 0.3) 0%, rgba(254, 215, 170, 0.3) 100%);
+    }
+    .login-logo {
+      height: 62px;
+      border-radius: 8px;
+      margin-bottom: 0.75rem;
+      border: 1.5px solid rgba(46, 26, 8, 0.08);
+    }
+    .login-header h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: var(--text);
+      margin: 0 0 0.25rem;
+    }
+    .login-header p {
+      font-size: 0.8rem;
+      color: var(--text-soft);
+      margin: 0;
+      font-weight: 600;
+    }
+    .login-tabs {
+      display: flex;
+      border-bottom: 1.5px solid var(--border);
+      background: var(--bg-soft);
+    }
+    .login-tab {
+      flex: 1;
+      padding: 14px;
+      text-align: center;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text-soft);
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      outline: none;
+      transition: all 0.22s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    .login-tab.active {
+      color: var(--orange);
+      background: var(--white);
+      border-bottom: 3px solid var(--orange);
+    }
+    .login-body {
+      padding: 2.25rem 2rem;
+    }
+    .fg-login {
+      margin-bottom: 1.25rem;
+      position: relative;
+    }
+    .fg-login label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-mid);
+      margin-bottom: 0.4rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-family: 'Inter', sans-serif;
+    }
+    .login-input-wrap {
+      position: relative;
+    }
+    .login-input-wrap i {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-light);
+      font-size: 0.95rem;
+    }
+    .fc-login {
+      width: 100%;
+      padding: 11px 12px 11px 36px;
+      border: 2px solid var(--border);
+      border-radius: var(--r-s);
+      font-size: 0.88rem;
+      outline: none;
+      background: var(--bg-soft);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      transition: all 0.22s;
+    }
+    .fc-login:focus {
+      border-color: var(--orange);
+      background: var(--white);
+      box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.08);
+    }
+    .login-btn {
+      width: 100%;
+      padding: 13px;
+      background: linear-gradient(135deg, var(--orange-l), var(--orange));
+      color: var(--white);
+      border: none;
+      border-radius: var(--r-s);
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      margin-top: 0.75rem;
+      box-shadow: 0 5px 15px rgba(234, 88, 12, 0.25);
+      transition: all 0.25s;
+    }
+    .login-btn:hover {
+      transform: translateY(-1.5px);
+      box-shadow: 0 8px 22px rgba(234, 88, 12, 0.35);
+    }
+    .login-error {
+      margin-top: 1rem;
+      padding: 10px;
+      background: #FEF2F2;
+      border: 1px solid #FEE2E2;
+      color: #991B1B;
+      font-size: 0.82rem;
+      font-weight: 600;
+      border-radius: var(--r-s);
+      display: none;
+      text-align: center;
+    }
+    .back-home {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      text-decoration: none;
+      color: var(--text-soft);
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-top: 1.5rem;
+      justify-content: center;
+      transition: color 0.22s;
+    }
+    .back-home:hover {
+      color: var(--orange);
+    }
+  </style>
+</head>
+<body>
+
+<div class="login-container">
+  <div class="login-header">
+    <img src="/logo.jpg" alt="Desi Chickenwala" class="login-logo">
+    <h2>Desi Chickenwala</h2>
+    <p>Partner & Management Portal</p>
+  </div>
+  
+  <div class="login-tabs">
+    <button class="login-tab active" id="tab-admin" onclick="switchTab('admin')">
+      <i class="fa-solid fa-user-shield"></i> Admin Portal
+    </button>
+    <button class="login-tab" id="tab-store" onclick="switchTab('store')">
+      <i class="fa-solid fa-shop"></i> Store Partner
+    </button>
+  </div>
+
+  <div class="login-body">
+    <form id="login-form" onsubmit="handleLogin(event)">
+      <div class="fg-login">
+        <label id="lbl-username">Admin Username</label>
+        <div class="login-input-wrap">
+          <i class="fa-solid fa-user"></i>
+          <input type="text" id="username" class="fc-login" required placeholder="Enter username">
+        </div>
+      </div>
+      
+      <div class="fg-login">
+        <label>Password</label>
+        <div class="login-input-wrap">
+          <i class="fa-solid fa-lock"></i>
+          <input type="password" id="password" class="fc-login" required placeholder="Enter password">
+        </div>
+      </div>
+
+      <button type="submit" class="login-btn" id="login-btn">Log In</button>
+      
+      <div class="login-error" id="error-msg">Invalid username or password.</div>
+    </form>
+    
+    <div style="text-align: center;">
+      <a href="/" class="back-home"><i class="fa-solid fa-arrow-left"></i> Back to Storefront</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  let currentRole = 'admin';
+
+  function switchTab(role) {
+    currentRole = role;
+    document.querySelectorAll('.login-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('error-msg').style.display = 'none';
+
+    if (role === 'admin') {
+      document.getElementById('tab-admin').classList.add('active');
+      document.getElementById('lbl-username').innerText = 'Admin Username';
+      document.getElementById('username').placeholder = 'Enter admin username';
+    } else {
+      document.getElementById('tab-store').classList.add('active');
+      document.getElementById('lbl-username').innerText = 'Store Partner Username';
+      document.getElementById('username').placeholder = 'Enter store username';
+    }
+  }
+
+  async function handleLogin(e) {
+    e.preventDefault();
+    const usernameVal = document.getElementById('username').value.trim();
+    const passwordVal = document.getElementById('password').value.trim();
+    const errorBox = document.getElementById('error-msg');
+    
+    errorBox.style.display = 'none';
+    
+    const apiPath = currentRole === 'admin' ? '/api/auth/admin' : '/api/auth/store';
+    
+    try {
+      const res = await fetch(apiPath, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: usernameVal,
+          password: passwordVal
+        })
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        if (currentRole === 'admin') {
+          sessionStorage.setItem('adminLoggedIn', 'true');
+          sessionStorage.setItem('adminName', data.name);
+          window.location.href = '/admin.html';
+        } else {
+          sessionStorage.setItem('storeLoggedIn', 'true');
+          sessionStorage.setItem('storeId', data.storeId);
+          sessionStorage.setItem('storeName', data.storeName);
+          window.location.href = '/store-dashboard.html';
+        }
+      } else {
+        errorBox.style.display = 'block';
+        errorBox.innerText = data.message || 'Invalid username or password.';
+      }
+    } catch(err) {
+      errorBox.style.display = 'block';
+      errorBox.innerText = 'Server connection error. Please try again.';
+    }
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Desi Chickenwala</string>
+    <string name="title_activity_main">Desi Chickenwala</string>
+    <string name="package_name">com.desichickenwala.app</string>
+    <string name="custom_url_scheme">com.desichickenwala.app</string>
+</resources>

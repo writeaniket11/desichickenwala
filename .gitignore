@@ -3,3 +3,5 @@ node_modules/
 .gemini/
 .agents/
 *.log
+
+.vercel

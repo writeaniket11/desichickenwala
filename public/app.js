@@ -3,12 +3,15 @@
    Customer storefront: lang, carousel, PIN, products, cart, orders
 ================================================================ */
 
+const API_BASE = window.Capacitor ? 'https://desichickenwala.vercel.app' : '';
+
 // ── State ──────────────────────────────────────────────────────
 let lang            = 'en';
 let products        = [];
 let stores          = [];
 let cart            = [];
 let activePinStore  = null;   // store object returned from PIN check
+let userCoords      = null;   // global user coordinates { lat, lng }
 
 // ── Journey steps ──────────────────────────────────────────────
 const JOURNEY = [
@@ -54,6 +57,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   initScrollFade();
   initHeaderScroll();
   initMobileCarts();
+  
+  const pinInp = document.getElementById('pin-input');
+  if (pinInp) {
+    pinInp.addEventListener('input', () => {
+      userCoords = null; // Reset GPS coordinates on manual typing
+      const statusEl = document.getElementById('loc-status');
+      if (statusEl) statusEl.style.display = 'none';
+    });
+  }
+
   switchLang('en');
 });
 
@@ -69,12 +82,12 @@ function initMobileCarts() {
 
 // ── Data ────────────────────────────────────────────────────────
 async function loadProducts() {
-  try { const r = await fetch('/api/products'); products = await r.json(); renderProducts(); }
+  try { const r = await fetch(API_BASE + '/api/products'); products = await r.json(); renderProducts(); }
   catch(e) { console.error('Products:', e); }
 }
 
 async function loadStores() {
-  try { const r = await fetch('/api/stores'); stores = await r.json(); renderFranchise(); }
+  try { const r = await fetch(API_BASE + '/api/stores'); stores = await r.json(); renderFranchise(); }
   catch(e) { console.error('Stores:', e); }
 }
 
@@ -156,29 +169,46 @@ function renderFranchise() {
   });
 }
 
-// ── PIN Code Check ────────────────────────────────────────────────
+// ── PIN Code Check & Geofencing ───────────────────────────────────
 async function checkPin() {
   const pin = document.getElementById('pin-input').value.trim();
   const resultEl = document.getElementById('pin-result');
-  if (!/^\d{6}$/.test(pin)) {
+  
+  if (!userCoords && !/^\d{6}$/.test(pin)) {
     resultEl.className = 'pin-result fail';
     resultEl.style.display = 'block';
     resultEl.textContent = lang==='mr' ? '⚠️ कृपया ६ अंकी PIN कोड टाका.' : '⚠️ Please enter a valid 6-digit PIN code.';
     return;
   }
+  
   resultEl.className = 'pin-result';
   resultEl.style.display = 'block';
   resultEl.textContent = lang==='mr' ? '🔍 तपासत आहे...' : '🔍 Checking...';
+  
   try {
-    const r    = await fetch(`/api/check-pincode/${pin}`);
+    const cleanPin = pin || 'gps';
+    let url = `/api/check-pincode/${cleanPin}?v=${Date.now()}`;
+    if (userCoords) {
+      url += `&lat=${userCoords.lat}&lng=${userCoords.lng}`;
+    }
+    
+    const r    = await fetch(url);
     const data = await r.json();
     if (data.available) {
       activePinStore = data.store;
       resultEl.className = 'pin-result ok';
       const sname = lang==='mr' ? data.store.nameMr : data.store.nameEn;
+      
+      let distText = '';
+      if (data.distance !== null && data.distance !== undefined) {
+        distText = lang==='mr' 
+          ? `<br><small style="font-weight:700;color:var(--orange);">📍 अंतर: ${data.distance} किमी (५ किमीच्या आत)</small>`
+          : `<br><small style="font-weight:700;color:var(--orange);">📍 Distance: ${data.distance} km (Within 5 km)</small>`;
+      }
+      
       resultEl.innerHTML = lang==='mr'
-        ? `✅ डिलिव्हरी उपलब्ध! <strong>${sname}</strong> द्वारे डिलिव्हरी केली जाईल.<br><small style="opacity:.8;font-weight:500;">📞 ${data.store.contact} · ⏰ ${data.store.timings}</small>`
-        : `✅ Delivery available via <strong>${sname}</strong>!<br><small style="opacity:.8;font-weight:500;">📞 ${data.store.contact} · ⏰ ${data.store.timings}</small>`;
+        ? `✅ डिलिव्हरी उपलब्ध! <strong>${sname}</strong> द्वारे डिलिव्हरी केली जाईल.${distText}<br><small style="opacity:.8;font-weight:500;">📞 ${data.store.contact} · ⏰ ${data.store.timings}</small>`
+        : `✅ Delivery available via <strong>${sname}</strong>!${distText}<br><small style="opacity:.8;font-weight:500;">📞 ${data.store.contact} · ⏰ ${data.store.timings}</small>`;
     } else {
       activePinStore = null;
       resultEl.className = 'pin-result fail';
@@ -190,6 +220,53 @@ async function checkPin() {
     resultEl.className = 'pin-result fail';
     resultEl.textContent = lang==='mr' ? 'काहीतरी चुकले. पुन्हा प्रयत्न करा.' : 'Something went wrong. Please try again.';
   }
+}
+
+// ── Geolocation Detection ─────────────────────────────────────────
+function detectUserLocation() {
+  const statusEl = document.getElementById('loc-status');
+  statusEl.style.display = 'inline-block';
+  statusEl.className = 'loc-status loading';
+  statusEl.textContent = lang === 'mr' ? '⏳ स्थान शोधत आहे...' : '⏳ Detecting location...';
+
+  if (!navigator.geolocation) {
+    statusEl.className = 'loc-status fail';
+    statusEl.textContent = lang === 'mr' ? '❌ तुमच्या ब्राउझरमध्ये GPS उपलब्ध नाही.' : '❌ GPS not supported by browser.';
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(async (position) => {
+    const lat = position.coords.latitude;
+    const lng = position.coords.longitude;
+    userCoords = { lat, lng };
+
+    try {
+      const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`);
+      const data = await res.json();
+      
+      const pincode = data.address && data.address.postcode;
+      if (pincode && /^\d{6}$/.test(pincode.replace(/\s/g, ''))) {
+        const cleanPin = pincode.replace(/\s/g, '').substring(0, 6);
+        document.getElementById('pin-input').value = cleanPin;
+        statusEl.className = 'loc-status ok';
+        statusEl.textContent = lang === 'mr' ? '✅ स्थान सापडले!' : '✅ Location detected!';
+      } else {
+        document.getElementById('pin-input').value = '';
+        statusEl.className = 'loc-status ok';
+        statusEl.textContent = lang === 'mr' ? '✅ GPS स्थान मिळाले.' : '✅ GPS location fetched.';
+      }
+      checkPin();
+    } catch (err) {
+      console.error(err);
+      statusEl.className = 'loc-status ok';
+      statusEl.textContent = lang === 'mr' ? '✅ GPS स्थान मिळाले.' : '✅ GPS location fetched.';
+      checkPin();
+    }
+  }, (err) => {
+    console.warn(err);
+    statusEl.className = 'loc-status fail';
+    statusEl.textContent = lang === 'mr' ? '❌ GPS परवानगी नाकारली.' : '❌ GPS permission denied.';
+  }, { enableHighAccuracy: true, timeout: 8000 });
 }
 
 // ── Products Render ───────────────────────────────────────────────
@@ -490,10 +567,11 @@ async function submitOrder(e) {
     storeNameEn:     activePinStore.nameEn,
     storeNameMr:     activePinStore.nameMr,
     pinCode:         document.getElementById('pin-input').value.trim(),
+    customerCoords:  userCoords,
     items:           cart
   };
   try {
-    const res  = await fetch('/api/orders',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    const res  = await fetch(API_BASE + '/api/orders',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
     const data = await res.json();
     if (data.success) {
       closeCheckout();
@@ -524,4 +602,44 @@ function initHeaderScroll() {
   window.addEventListener('scroll', () => {
     document.getElementById('main-header').classList.toggle('scrolled', window.scrollY > 30);
   });
+}
+
+// ── Franchise Inquiry Submission ──────────────────────────────────
+async function submitFranchiseInquiry(e) {
+  e.preventDefault();
+  const btn = document.getElementById('inq-submit-btn');
+  const successBox = document.getElementById('inquiry-success');
+  
+  const payload = {
+    name:     document.getElementById('inq-name').value,
+    phone:    document.getElementById('inq-phone').value,
+    location: document.getElementById('inq-location').value,
+    budget:   document.getElementById('inq-budget').value
+  };
+
+  btn.disabled = true;
+  btn.innerText = lang==='mr'?'⏳ पाठवत आहे...':'⏳ Sending...';
+
+  try {
+    const res = await fetch(API_BASE + '/api/franchise-inquiries', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if (data.success) {
+      successBox.style.display = 'block';
+      successBox.innerHTML = lang==='mr'
+        ? '✅ चौकशी यशस्वीरित्या नोंदवली गेली! आमची टीम लवकरच संपर्क साधेल.'
+        : '✅ Inquiry submitted successfully! Our team will contact you shortly.';
+      document.getElementById('franchise-inquiry-form').reset();
+    }
+  } catch(err) {
+    alert(lang==='mr'?'काहीतरी चुकले. पुन्हा प्रयत्न करा.':'Something went wrong. Please try again.');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = lang==='mr'?'माहिती पाठवा (Submit)':'Apply for Franchise';
+  }
 }

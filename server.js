@@ -31,9 +31,65 @@ const writeDB = (d) => fs.writeFileSync(DB_PATH, JSON.stringify(d,null,2), 'utf8
 app.get('/api/check-pincode/:pin', (req, res) => {
   const db   = readDB();
   const pin  = req.params.pin.trim();
-  const store = db.stores.find(s => s.status === 'active' && s.pinCodes && s.pinCodes.includes(pin));
-  if (store) {
-    res.json({ available: true, store: { id: store.id, nameEn: store.nameEn, nameMr: store.nameMr, address: store.address, contact: store.contact, timings: store.timings } });
+  const lat  = parseFloat(req.query.lat);
+  const lng  = parseFloat(req.query.lng);
+
+  let selectedStore = null;
+  let distance = null;
+
+  // 1. If GPS coordinates are provided, do the 5km radius check
+  if (!isNaN(lat) && !isNaN(lng)) {
+    let closestStore = null;
+    let minDistance = Infinity;
+
+    // Helper to calculate Haversine distance
+    const getDistance = (lat1, lon1, lat2, lon2) => {
+      const R = 6371; // Earth's radius in km
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a = 
+        Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+        Math.sin(dLon/2) * Math.sin(dLon/2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      return R * c;
+    };
+
+    db.stores.forEach(s => {
+      if (s.status === 'active' && s.lat && s.lng) {
+        const d = getDistance(lat, lng, s.lat, s.lng);
+        if (d < minDistance) {
+          minDistance = d;
+          closestStore = s;
+        }
+      }
+    });
+
+    const maxRadius = closestStore ? (closestStore.radius || 5) : 5;
+    if (closestStore && minDistance <= maxRadius) {
+      selectedStore = closestStore;
+      distance = minDistance;
+    }
+  }
+
+  // 2. Fallback to pincode checking if no store matched the GPS radius check
+  if (!selectedStore && pin !== 'gps' && pin !== '000000' && pin !== '') {
+    selectedStore = db.stores.find(s => s.status === 'active' && s.pinCodes && s.pinCodes.includes(pin));
+  }
+
+  if (selectedStore) {
+    res.json({ 
+      available: true, 
+      store: { 
+        id: selectedStore.id, 
+        nameEn: selectedStore.nameEn, 
+        nameMr: selectedStore.nameMr, 
+        address: selectedStore.address, 
+        contact: selectedStore.contact, 
+        timings: selectedStore.timings 
+      },
+      distance: distance ? parseFloat(distance.toFixed(2)) : null
+    });
   } else {
     res.json({ available: false });
   }
@@ -88,9 +144,14 @@ app.get('/api/stores', (req,res) => res.json(readDB().stores||[]));
 
 app.post('/api/stores', (req,res) => {
   const db = readDB();
-  const { id, nameMr, nameEn, address, owner, contact, ownerPhone, gmb, timings, status, pinCodes, username, password } = req.body;
+  const { id, nameMr, nameEn, address, owner, contact, ownerPhone, gmb, timings, status, pinCodes, username, password, lat, lng, radius } = req.body;
   const pins = Array.isArray(pinCodes) ? pinCodes : (typeof pinCodes==='string' ? pinCodes.split(',').map(p=>p.trim()).filter(Boolean) : []);
-  const store = { id:id||'store_'+Date.now(), nameMr, nameEn, address, owner, contact, ownerPhone, gmb, timings, status:status||'active', pinCodes:pins, credentials:{username,password} };
+  const store = { 
+    id:id||'store_'+Date.now(), nameMr, nameEn, address, owner, contact, ownerPhone, gmb, timings, status:status||'active', pinCodes:pins, credentials:{username,password},
+    lat: parseFloat(lat) || 0,
+    lng: parseFloat(lng) || 0,
+    radius: parseFloat(radius) || 5
+  };
   const idx = db.stores.findIndex(s=>s.id===store.id);
   if (idx>-1) db.stores[idx]=store; else db.stores.push(store);
   writeDB(db); res.json({success:true,store});
@@ -109,6 +170,15 @@ app.delete('/api/stores/:id', (req,res) => {
   const db = readDB();
   db.stores = db.stores.filter(s=>s.id!==req.params.id);
   writeDB(db); res.json({success:true});
+});
+
+app.put('/api/stores/:id/status', (req, res) => {
+  const db = readDB();
+  const store = db.stores.find(s => s.id === req.params.id);
+  if (!store) return res.status(404).json({ success: false });
+  store.status = req.body.status;
+  writeDB(db);
+  res.json({ success: true, store });
 });
 
 // ── ORDERS ──────────────────────────────────────────────────────
@@ -134,6 +204,34 @@ app.put('/api/orders/:id', (req,res) => {
   if (!o) return res.status(404).json({success:false});
   o.status = req.body.status;
   writeDB(db); res.json({success:true,order:o});
+});
+
+// ── FRANCHISE INQUIRIES ──────────────────────────────────────────
+app.post('/api/franchise-inquiries', (req, res) => {
+  const db = readDB();
+  if (!db.inquiries) db.inquiries = [];
+  const inquiry = {
+    ...req.body,
+    id: 'INQ-' + Date.now(),
+    timestamp: new Date().toISOString(),
+    status: 'New'
+  };
+  db.inquiries.push(inquiry);
+  writeDB(db);
+  res.json({ success: true, inquiry });
+});
+
+app.get('/api/franchise-inquiries', (req, res) => {
+  res.json(readDB().inquiries || []);
+});
+
+app.put('/api/franchise-inquiries/:id', (req, res) => {
+  const db = readDB();
+  const inq = (db.inquiries || []).find(i => i.id === req.params.id);
+  if (!inq) return res.status(404).json({ success: false });
+  inq.status = req.body.status;
+  writeDB(db);
+  res.json({ success: true, inquiry: inq });
 });
 
 // Catch-all → storefront

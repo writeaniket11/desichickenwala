@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Desi Chickenwala | Authentic Desi and Delicious</title>
   <meta name="description" content="100% authentic Gavran Desi Chicken — chemical-free, antibiotic-free, raised naturally. Farm-fresh delivery. Order online — Karad & Kolhapur.">
-  <link rel="stylesheet" href="/style.css?v=9">
+  <link rel="stylesheet" href="/style.css?v=15">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -30,9 +30,6 @@
         <button class="lbtn active" onclick="switchLang('en')">English</button>
         <button class="lbtn" onclick="switchLang('mr')">मराठी</button>
       </div>
-      <a href="/admin.html" class="admin-btn">
-        <i class="fa-solid fa-user-shield"></i> Admin
-      </a>
       <button class="cart-btn" onclick="toggleCart(true)" aria-label="Cart">
         <i class="fa-solid fa-basket-shopping"></i>
         <span class="cart-badge" id="cart-badge">0</span>
@@ -53,13 +50,10 @@
 
   <!-- Mobile dropdown menu -->
   <div class="mobile-menu" id="mobile-menu">
-    <div style="display:flex;gap:.5rem;">
+    <div style="display:flex;gap:.5rem;margin-bottom:0;">
       <button class="lbtn active" onclick="switchLang('en');toggleMenu()">English</button>
       <button class="lbtn" onclick="switchLang('mr');toggleMenu()">मराठी</button>
     </div>
-    <a href="/admin.html" class="admin-btn" onclick="toggleMenu()">
-      <i class="fa-solid fa-user-shield"></i> Admin Panel
-    </a>
   </div>
 </header>
 
@@ -115,6 +109,13 @@
     <p class="pin-sub" data-mr="तुमचा ६-अंकी PIN कोड टाका आणि आम्ही तुमच्या भागात डिलिव्हरी करतो का ते तपासा." data-en="Enter your 6-digit PIN code to check if we deliver to your area.">
       Enter your 6-digit PIN code to check if we deliver to your area.
     </p>
+    <div class="detect-loc-row">
+      <button type="button" class="detect-btn" onclick="detectUserLocation()">
+        <i class="fa-solid fa-location-arrow"></i>
+        <span data-mr="माझे स्थान मिळवा (GPS)" data-en="Detect My Location (GPS)">Detect My Location (GPS)</span>
+      </button>
+      <span id="loc-status" class="loc-status" style="display: none;"></span>
+    </div>
     <div class="pin-row">
       <input type="text" id="pin-input" class="pin-input" placeholder="e.g. 415110" maxlength="6" inputmode="numeric" pattern="[0-9]{6}" onkeydown="if(event.key==='Enter')checkPin()">
       <button class="pin-btn" onclick="checkPin()">
@@ -200,7 +201,81 @@
   </div>
 </section>
 
-<!-- ═══════════════════ FOOTER ═══════════════════ -->
+<!-- ═══════════════════ FRANCHISE INQUIRY FORM ═══════════════════ -->
+<section class="franchise-inquiry-sec sec-pad" id="franchise-inquiry-sec">
+  <div class="container">
+    <div class="inquiry-grid">
+      <!-- Info block -->
+      <div class="inquiry-info fi">
+        <span class="inquiry-badge" data-mr="भागीदारी संधी" data-en="FRANCHISE OPPORTUNITY">FRANCHISE OPPORTUNITY</span>
+        <h2 data-mr="स्वतःचा यशस्वी व्यवसाय सुरू करा! <span>देशी चिकनवाला</span> भागीदार व्हा." data-en="Start a High-Profits Store! Become a <span>Desi Chickenwala</span> Partner.">Start a High-Profits Store! Become a <span>Desi Chickenwala</span> Partner.</h2>
+        <p class="inquiry-lead" data-mr="महाराष्ट्रातील सर्वात वेगाने वाढणाऱ्या गावरान देशी चिकन ब्रँडसोबत जोडले जा. कमी गुंतवणूक आणि खात्रीशीरी नफा मिळवा." data-en="Join the fastest growing premium Gavran Desi Chicken brand. Leverage our complete farm-to-store supply chain and tap into the huge demand for healthy, chemical-free meat.">
+          Join the fastest growing premium Gavran Desi Chicken brand. Leverage our complete farm-to-store supply chain and tap into the huge demand for healthy, chemical-free meat.
+        </p>
+        <ul class="inquiry-benefits">
+          <li>
+            <i class="fa-solid fa-circle-check"></i>
+            <div class="b-text">
+              <strong data-mr="कमी गुंतवणूक, खात्रीशीर नफा (High ROI)" data-en="Low Investment, High ROI">Low Investment, High ROI</strong>
+              <span data-mr="अत्यंत वेगाने भांडवल वसूल (६ ते ९ महिन्यांत गुंतवणूक परत)" data-en="Get quick payback within 6-9 months on average.">Get quick payback within 6-9 months on average.</span>
+            </div>
+          </li>
+          <li>
+            <i class="fa-solid fa-circle-check"></i>
+            <div class="b-text">
+              <strong data-mr="१००% हमी सप्लाय (Farm-to-Store Supply)" data-en="100% Guaranteed Supply">100% Guaranteed Supply</strong>
+              <span data-mr="आमच्या स्वतःच्या फार्म्समधून रोज ताजे पक्षी थेट तुमच्या दुकानापर्यंत." data-en="No outsourcing. Premium birds delivered directly from our own DCC farms.">No outsourcing. Premium birds delivered directly from our own DCC farms.</span>
+            </div>
+          </li>
+          <li>
+            <i class="fa-solid fa-circle-check"></i>
+            <div class="b-text">
+              <strong data-mr="मार्केटिंग व दुकानाचे सेटअप (Full Support)" data-en="Marketing & Store Setup Support">Marketing & Store Setup Support</strong>
+              <span data-mr="ब्रँडिंग, मार्केटिंग बॅनर, बोर्ड्स आणि स्टाफ ट्रेनिंगमध्ये संपूर्ण मदत." data-en="End-to-end guidance in store interior design, billing software, and staff training.">End-to-end guidance in store interior design, billing software, and staff training.</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Form block -->
+      <div class="inquiry-card fi">
+        <h3 data-mr="आजच चौकशी अर्ज भरा" data-en="Franchise Inquiry Form">Franchise Inquiry Form</h3>
+        <p data-mr="खालील माहिती भरा, आमची विस्तार टीम २४ तासांच्या आत संपर्क साधेल." data-en="Fill in your details below. Our expansion team will contact you within 24 hours.">
+          Fill in your details below. Our expansion team will contact you within 24 hours.
+        </p>
+        <form id="franchise-inquiry-form" onsubmit="submitFranchiseInquiry(event)">
+          <div class="fg-inquiry">
+            <label data-mr="तुमचे पूर्ण नाव" data-en="Your Full Name">Your Full Name</label>
+            <input type="text" id="inq-name" class="fc-inquiry" required placeholder="e.g. Kiran Koli">
+          </div>
+          <div class="fg-inquiry">
+            <label data-mr="मोबाईल नंबर" data-en="Mobile Number">Mobile Number</label>
+            <input type="tel" id="inq-phone" class="fc-inquiry" required placeholder="e.g. 9459364555">
+          </div>
+          <div class="fg-inquiry">
+            <label data-mr="प्रस्तावित शहर / ठिकाण" data-en="Proposed Location / City">Proposed Location / City</label>
+            <input type="text" id="inq-location" class="fc-inquiry" required placeholder="e.g. Kolhapur, Karad, Satara">
+          </div>
+          <div class="fg-inquiry">
+            <label data-mr="गुंतवणूक क्षमता (सुमारे)" data-en="Investment Capital Capacity">Investment Capital Capacity</label>
+            <select id="inq-budget" class="fc-inquiry" required>
+              <option value="" disabled selected data-mr="पर्याय निवडा" data-en="Select Option">Select Option</option>
+              <option value="10-15 Lakhs" data-mr="१० ते १५ लाख" data-en="₹10 - ₹15 Lakhs">₹10 - ₹15 Lakhs</option>
+              <option value="15-20 Lakhs" data-mr="१५ ते २० लाख" data-en="₹15 - ₹20 Lakhs">₹15 - ₹20 Lakhs</option>
+              <option value="20-25 Lakhs" data-mr="२० ते २५ लाख" data-en="₹20 - ₹25 Lakhs">₹20 - ₹25 Lakhs</option>
+              <option value="25+ Lakhs" data-mr="२५ लाखांपेक्षा जास्त" data-en="₹25 Lakhs +">₹25 Lakhs +</option>
+            </select>
+          </div>
+          <button type="submit" class="inq-submit-btn" id="inq-submit-btn">
+            <span data-mr="माहिती पाठवा (Submit)" data-en="Apply for Franchise">Apply for Franchise</span>
+          </button>
+        </form>
+        <div id="inquiry-success" class="inquiry-success-msg" style="display:none;"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ═══════════════════ FOOTER ═══════════════════ -->
 <footer class="ft-new-design">
   <div class="ft-container">
@@ -212,7 +287,6 @@
           <li><a href="#products-sec" data-mr="गावरान देशी चिकन" data-en="Gavran Desi Chicken">Gavran Desi Chicken</a></li>
           <li><a href="#products-sec" data-mr="गावरान सुप्रीम" data-en="Gavran Supreme">Gavran Supreme</a></li>
           <li><a href="#products-sec" data-mr="गावरान पॉवर ग्रो" data-en="Gavran Power Grow">Gavran Power Grow</a></li>
-          <li><a href="#products-sec" data-mr="सर्व उत्पादने" data-en="All Products">All Products</a></li>
         </ul>
       </div>
 
@@ -220,60 +294,24 @@
       <div class="ft-col">
         <h4 class="ft-title-underline" data-mr="माहिती" data-en="KNOW US">KNOW US</h4>
         <ul class="ft-links-list">
-          <li><a href="#" onclick="document.querySelector('.franchise-section').scrollIntoView({behavior:'smooth'}); return false;" data-mr="आमची स्टोअर्स" data-en="Our Stores">Our Stores</a></li>
-          <li><a href="/admin.html" data-mr="अ‍ॅडमिन पॅनेल" data-en="Admin Panel">Admin Panel</a></li>
-          <li><a href="/store-dashboard.html" data-mr="स्टोअर लॉगिन" data-en="Store Login">Store Login</a></li>
-          <li><a href="#" data-mr="नियम आणि अटी" data-en="Terms And Conditions">Terms And Conditions</a></li>
-          <li><a href="#" data-mr="गोपनीयता धोरण" data-en="Privacy Policy">Privacy Policy</a></li>
+          <li><a href="#" onclick="document.getElementById('journey-sec')?.scrollIntoView({behavior:'smooth'}); return false;" data-mr="आमचा प्रवास (प्रक्रिया)" data-en="Our Journey (Process)">Our Journey (Process)</a></li>
+          <li><a href="#" onclick="document.querySelector('.franchise-section')?.scrollIntoView({behavior:'smooth'}); return false;" data-mr="फ्रँचायझी स्टोअर्स" data-en="Franchise Stores">Franchise Stores</a></li>
+          <li><a href="#" onclick="return false;" data-mr="नियम आणि अटी" data-en="Terms And Conditions">Terms And Conditions</a></li>
+          <li><a href="#" onclick="return false;" data-mr="गोपनीयता धोरण" data-en="Privacy Policy">Privacy Policy</a></li>
         </ul>
-      </div>
-
-      <!-- Column 3: Our Stores -->
-      <div class="ft-col">
-        <h4 class="ft-title-underline" data-mr="आमचे स्टोअर" data-en="OUR STORES">OUR STORES</h4>
-        <div class="ft-store-info">
-          <strong data-mr="कराड स्टोअर" data-en="Karad Store">Karad Store</strong>
-          <p class="ft-store-desc">PD Patil Garden, Shaniwar Peth, Karad</p>
-          <p class="ft-store-phone"><i class="fa-solid fa-phone"></i> 9459364555</p>
-          <p class="ft-store-time"><i class="fa-solid fa-clock"></i> 8 AM – 8 PM</p>
-          <span class="ft-coming-soon-badge" data-mr="कोल्हापूर (लवकरच!)" data-en="Kolhapur (Soon!)">Kolhapur (Soon!)</span>
-        </div>
-      </div>
-
-      <!-- Column 4: App & Connect -->
-      <div class="ft-col">
-        <h4 class="ft-title-underline" data-mr="अॅप आणि सोशल" data-en="APP & CONNECT">APP & CONNECT</h4>
-        <div class="app-badges">
-          <a href="#" class="app-btn" onclick="return false;">
-            <i class="fa-brands fa-google-play"></i>
-            <div class="app-btn-text">
-              <span>GET IT ON</span>
-              <strong>Google Play</strong>
-            </div>
-          </a>
-          <a href="#" class="app-btn" onclick="return false;">
-            <i class="fa-brands fa-apple"></i>
-            <div class="app-btn-text">
-              <span>Download on the</span>
-              <strong>App Store</strong>
-            </div>
-          </a>
-        </div>
-        <div class="social-pill-container" style="margin-top:0.5rem;">
-          <div class="social-pill">
-            <a href="https://www.facebook.com/" target="_blank" class="soc-icon fb" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
-            <a href="https://www.instagram.com/desi.chickenwala/" target="_blank" class="soc-icon ig" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
-            <a href="https://wa.me/919459364555" target="_blank" class="soc-icon wa" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
-            <a href="https://maps.app.goo.gl/91vLrpnUojwP9XdG6" target="_blank" class="soc-icon maps" aria-label="Google Maps"><i class="fa-solid fa-location-dot"></i></a>
-          </div>
-        </div>
       </div>
     </div>
 
     <!-- Office Address & Brand Info -->
     <div class="ft-info-row">
       <div class="ft-brand-info">
-        <img src="/logo.jpg" alt="Desi Chickenwala Logo" class="ft-logo">
+        <div class="ft-brand-logo-row">
+          <img src="/logo.jpg" alt="Desi Chickenwala Logo" class="ft-logo">
+          <div class="ft-brand-logo-text">
+            <span class="ft-logo-title">DESI CHICKENWALA</span>
+            <span class="ft-logo-subtitle" data-mr="अस्सल गावरान चव" data-en="Authentic Gavran Taste">Authentic Gavran Taste</span>
+          </div>
+        </div>
         <p data-mr="अस्सल गावरान आणि स्वादिष्ट चिकन तुमच्या दारापर्यंत. केमिकल मुक्त, नैसर्गिक, रोज ताजे." data-en="Your most trusted source of 100% authentic, farm-fresh Gavran Desi Chicken. Chemical-free, naturally raised, and delivered fresh daily.">
           Your most trusted source of 100% authentic, farm-fresh Gavran Desi Chicken. Chemical-free, naturally raised, and delivered fresh daily.
         </p>
@@ -284,6 +322,15 @@
           Address: Shaniwar Peth, Karad, Maharashtra 415110
         </p>
         <p><i class="fa-solid fa-envelope"></i> Info@desichickenwala.com</p>
+      </div>
+      <div class="ft-social-info">
+        <h5 data-mr="आमच्याशी जोडा" data-en="Connect With Us">Connect With Us</h5>
+        <div class="social-icons-large">
+          <a href="https://www.facebook.com/" target="_blank" class="soc-icon-large fb" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="https://www.instagram.com/desi.chickenwala/" target="_blank" class="soc-icon-large ig" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+          <a href="https://wa.me/919459364555" target="_blank" class="soc-icon-large wa" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+          <a href="https://maps.app.goo.gl/91vLrpnUojwP9XdG6" target="_blank" class="soc-icon-large maps" aria-label="Google Maps"><i class="fa-solid fa-location-dot"></i></a>
+        </div>
       </div>
     </div>
 
@@ -390,6 +437,6 @@
   </div>
 </div>
 
-<script src="/app.js"></script>
+<script src="/app.js?v=2"></script>
 </body>
 </html>

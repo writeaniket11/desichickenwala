@@ -1,247 +1,634 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script>
+    if (sessionStorage.getItem('storeLoggedIn') !== 'true') {
+      window.location.href = '/login.html';
+    }
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Store Dashboard | Desi Chickenwala</title>
-  <link rel="stylesheet" href="/style.css?v=2">
+  <title>Store Partner Portal | Desi Chickenwala</title>
+  <link rel="stylesheet" href="/style.css?v=15">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    body{background:var(--bg);}
-    .dash-wrap{max-width:1100px;margin:0 auto;padding:2rem 1.5rem;}
-    /* Login card */
-    .login-card{max-width:420px;margin:4rem auto;background:var(--white);border-radius:var(--r-l);padding:2.5rem;box-shadow:var(--shadow-md);border:1.5px solid var(--border);border-top:4px solid var(--orange);}
-    .login-card h2{font-size:1.4rem;color:var(--text);margin-bottom:.4rem;}
-    .login-card p{font-size:.85rem;color:var(--text-soft);margin-bottom:1.75rem;}
-    .lc-logo{display:flex;align-items:center;gap:.65rem;margin-bottom:1.75rem;}
-    .lc-logo img{height:54px;object-fit:contain;}
-    .err-msg{background:#FEF2F2;color:#B91C1C;border:1px solid #FECACA;border-radius:var(--r-s);padding:10px 14px;font-size:.84rem;font-weight:600;margin-bottom:1rem;display:none;}
-    /* Dashboard */
-    .dash-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:2rem;}
-    .store-pill{display:inline-flex;align-items:center;gap:.5rem;background:var(--green-pale);border:1px solid rgba(74,124,47,.22);color:var(--green);font-size:.82rem;font-weight:700;padding:6px 16px;border-radius:var(--r-pill);}
-    .logout-btn{display:inline-flex;align-items:center;gap:.45rem;background:var(--white);border:1.5px solid var(--border);color:var(--text-mid);font-family:'Inter',sans-serif;font-size:.82rem;font-weight:600;padding:8px 18px;border-radius:var(--r-pill);cursor:pointer;transition:all .22s;}
-    .logout-btn:hover{background:var(--orange);color:var(--white);border-color:var(--orange);}
-    /* Stats */
-    .stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1.25rem;margin-bottom:2rem;}
-    .stat-card{background:var(--white);border-radius:var(--r-m);padding:1.4rem;border:1.5px solid var(--border);box-shadow:var(--shadow-xs);}
-    .stat-card .sn{font-size:2rem;font-weight:900;color:var(--orange);font-family:'Inter',sans-serif;line-height:1;}
-    .stat-card .sl{font-size:.75rem;font-weight:600;color:var(--text-soft);text-transform:uppercase;letter-spacing:1px;margin-top:.3rem;}
-    /* Orders table */
-    .orders-card{background:var(--white);border-radius:var(--r-l);border:1.5px solid var(--border);box-shadow:var(--shadow-sm);overflow:hidden;}
-    .orders-card-head{padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--bg-soft);}
-    .orders-card-head h3{font-family:'Inter',sans-serif;font-size:1rem;font-weight:700;color:var(--text);}
-    .refresh-btn{display:inline-flex;align-items:center;gap:.4rem;background:var(--orange);color:var(--white);border:none;padding:7px 16px;border-radius:var(--r-pill);font-family:'Inter',sans-serif;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .22s;}
-    .refresh-btn:hover{background:var(--orange-h);}
-    .orders-table{width:100%;border-collapse:collapse;}
-    .orders-table th{padding:12px 16px;text-align:left;font-family:'Inter',sans-serif;font-size:.72rem;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:1px;background:var(--bg-soft);border-bottom:1px solid var(--border);}
-    .orders-table td{padding:12px 16px;font-family:'Inter',sans-serif;font-size:.83rem;color:var(--text);border-bottom:1px solid var(--border);}
-    .orders-table tr:last-child td{border-bottom:none;}
-    .orders-table tr:hover td{background:var(--bg-soft);}
-    .status-pill{display:inline-block;font-size:.7rem;font-weight:700;padding:4px 12px;border-radius:var(--r-pill);}
-    .status-pill.Pending   {background:#FEF9E7;color:#B45309;}
-    .status-pill.Preparing {background:#EFF6FF;color:#1D4ED8;}
-    .status-pill.Dispatched{background:var(--green-pale);color:var(--green);}
-    .status-pill.Delivered {background:#ECFDF5;color:#059669;}
-    .status-pill.Cancelled {background:#FEF2F2;color:#B91C1C;}
-    .status-sel{border:1.5px solid var(--border);border-radius:var(--r-s);padding:5px 10px;font-family:'Inter',sans-serif;font-size:.8rem;outline:none;cursor:pointer;background:var(--bg-soft);color:var(--text);}
-    .status-sel:focus{border-color:var(--orange);}
-    .empty-orders{text-align:center;padding:3rem;color:var(--text-soft);}
-    .empty-orders i{font-size:2.5rem;display:block;margin-bottom:.75rem;color:var(--gold);}
+    body {
+      background: #F8F6F0;
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #2E1A08;
+    }
+    
+    /* Portal Header */
+    .portal-header {
+      background: var(--white);
+      border-bottom: 3px solid var(--orange);
+      box-shadow: 0 4px 15px rgba(234, 88, 12, 0.05);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0.85rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .brand-section {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      text-decoration: none;
+    }
+    .brand-logo {
+      height: 48px;
+      border-radius: 6px;
+      border: 1.5px solid rgba(46, 26, 8, 0.08);
+    }
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.15;
+    }
+    .brand-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.25rem;
+      font-weight: 900;
+      color: var(--text);
+    }
+    .brand-tag {
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: var(--orange);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .nav-controls {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+    }
+    .store-badge {
+      background: var(--green-pale);
+      border: 1px solid rgba(74, 124, 47, 0.2);
+      color: var(--green);
+      padding: 6px 14px;
+      border-radius: 30px;
+      font-weight: 700;
+      font-size: 0.8rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .logout-btn {
+      background: #DC2626;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 16px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.82rem;
+      font-family: 'Inter', sans-serif;
+      transition: background 0.22s;
+    }
+    .logout-btn:hover {
+      background: #B91C1C;
+    }
+    
+    /* Layout Container */
+    .dashboard-container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+    }
+    
+    /* Welcome & Status Bar */
+    .welcome-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 15px rgba(46, 26, 8, 0.02);
+    }
+    .welcome-text h2 {
+      font-size: 1.5rem;
+      font-weight: 900;
+      margin: 0;
+      color: var(--text);
+    }
+    .welcome-text p {
+      font-size: 0.84rem;
+      color: var(--text-soft);
+      margin: 0.25rem 0 0;
+    }
+    
+    /* Status Toggle Switch */
+    .status-controller {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: var(--bg-soft);
+      padding: 10px 16px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+    .status-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-mid);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .switch-container {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 26px;
+    }
+    .switch-container input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background-color: #CBD5E1;
+      transition: .3s;
+      border-radius: 34px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .3s;
+      border-radius: 50%;
+    }
+    input:checked + .slider {
+      background-color: var(--green);
+    }
+    input:checked + .slider:before {
+      transform: translateX(24px);
+    }
+    .status-indicator-text {
+      font-size: 0.85rem;
+      font-weight: 800;
+    }
+    .status-indicator-text.open { color: var(--green); }
+    .status-indicator-text.closed { color: #DC2626; }
+    
+    /* Stats grid */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+      margin-bottom: 2.25rem;
+    }
+    .kpi-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 15px rgba(46, 26, 8, 0.02);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: transform 0.22s;
+    }
+    .kpi-card:hover {
+      transform: translateY(-2px);
+    }
+    .kpi-val {
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--text);
+      line-height: 1.1;
+    }
+    .kpi-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-soft);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 0.4rem;
+    }
+    .kpi-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+    }
+    .kpi-card.total .kpi-icon { background: #FEF3C7; color: var(--gold); }
+    .kpi-card.pending .kpi-icon { background: #FFF1F2; color: #E11D48; }
+    .kpi-card.dispatched .kpi-icon { background: #F3E8FF; color: #7E22CE; }
+    .kpi-card.delivered .kpi-icon { background: #DCFCE7; color: #15803D; }
+    
+    /* Orders card */
+    .content-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: 0 4px 15px rgba(46, 26, 8, 0.02);
+      overflow: hidden;
+    }
+    .card-header {
+      padding: 1.25rem 1.75rem;
+      border-bottom: 1.5px solid rgba(46, 26, 8, 0.05);
+      background: #FAF9F6;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .card-header h3 {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--text);
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .refresh-btn {
+      background: var(--orange);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 0.8rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.22s;
+    }
+    .refresh-btn:hover {
+      background: var(--orange-h);
+    }
+    
+    .table-container {
+      overflow-x: auto;
+    }
+    .corporate-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+    .corporate-table th, .corporate-table td {
+      padding: 14px 18px;
+      font-size: 0.88rem;
+      border-bottom: 1px solid rgba(46, 26, 8, 0.06);
+    }
+    .corporate-table th {
+      font-weight: 700;
+      color: var(--text-soft);
+      background: #FAF9F6;
+      text-transform: uppercase;
+      font-size: 0.72rem;
+      letter-spacing: 0.5px;
+    }
+    .corporate-table tr:hover td {
+      background: rgba(234, 88, 12, 0.02);
+    }
+    .corporate-table tr:last-child td {
+      border-bottom: none;
+    }
+    
+    /* Badges */
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: 30px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .status-Pending   { background: #FEF3C7; color: #D97706; }
+    .status-Preparing { background: #E0F2FE; color: #0284C7; }
+    .status-Dispatched{ background: #F3E8FF; color: #7E22CE; }
+    .status-Delivered { background: #DCFCE7; color: #15803D; }
+    .status-Cancelled { background: #FEE2E2; color: #B91C1C; }
+    
+    /* Select input style in table */
+    .status-select {
+      border: 1.5px solid var(--border);
+      border-radius: 6px;
+      padding: 5px 10px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.8rem;
+      outline: none;
+      background: var(--bg-soft);
+      color: var(--text);
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.22s;
+    }
+    .status-select:focus {
+      border-color: var(--orange);
+      background: var(--white);
+    }
+    .empty-orders {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--text-soft);
+    }
+    .empty-orders i {
+      font-size: 2.8rem;
+      display: block;
+      margin-bottom: 0.75rem;
+      color: var(--gold);
+    }
+    
+    @media (max-width: 960px) {
+      .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (max-width: 640px) {
+      .kpi-grid {
+        grid-template-columns: 1fr;
+      }
+      .welcome-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
   </style>
 </head>
 <body>
 
-<!-- LOGIN SCREEN -->
-<div id="login-screen">
-  <header>
-    <div class="nav">
-      <a href="/" class="logo-wrap">
-        <img src="/logo.jpg" alt="Desi Chickenwala" class="logo-img">
-        <div class="brand">
+  <!-- PORTAL HEADER -->
+  <header class="portal-header">
+    <div class="header-container">
+      <a href="/" class="brand-section">
+        <img src="/logo.jpg" alt="Desi Chickenwala Logo" class="brand-logo">
+        <div class="brand-text">
           <span class="brand-name">Desi Chickenwala</span>
-          <span class="brand-tag">Store Portal</span>
+          <span class="brand-tag">Partner Portal</span>
         </div>
       </a>
-    </div>
-  </header>
-  <div class="dash-wrap">
-    <div class="login-card">
-      <div class="lc-logo">
-        <img src="/logo.jpg" alt="logo">
-        <div>
-          <div style="font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:900;color:var(--orange);">Store Login</div>
-          <div style="font-size:.72rem;color:var(--text-soft);">Franchise Dashboard</div>
-        </div>
-      </div>
-      <h2>Welcome Back</h2>
-      <p>Login with your store credentials to manage orders.</p>
-      <div class="err-msg" id="login-err">Invalid username or password.</div>
-      <form onsubmit="doLogin(event)">
-        <div class="fg">
-          <label>Username</label>
-          <input type="text" id="s-user" class="fc" placeholder="e.g. karad_store" required>
-        </div>
-        <div class="fg">
-          <label>Password</label>
-          <input type="password" id="s-pass" class="fc" placeholder="••••••••••" required>
-        </div>
-        <button type="submit" class="sub-btn">Login to Dashboard</button>
-      </form>
-      <p style="text-align:center;margin-top:1rem;font-size:.78rem;color:var(--text-soft);">
-        Are you the Super Admin? <a href="/admin.html" style="color:var(--orange);font-weight:600;">Go to Admin Panel</a>
-      </p>
-    </div>
-  </div>
-</div>
-
-<!-- DASHBOARD SCREEN (hidden until login) -->
-<div id="dash-screen" style="display:none;">
-  <header>
-    <div class="nav">
-      <a href="/" class="logo-wrap">
-        <img src="/logo.jpg" alt="Desi Chickenwala" class="logo-img">
-        <div class="brand">
-          <span class="brand-name">Desi Chickenwala</span>
-          <span class="brand-tag" id="dash-store-tag">Store Portal</span>
-        </div>
-      </a>
-      <div class="nav-right">
-        <span class="store-pill"><i class="fa-solid fa-store"></i> <span id="dash-store-name">Store</span></span>
-        <button class="logout-btn" onclick="doLogout()"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+      <div class="nav-controls">
+        <span class="store-badge"><i class="fa-solid fa-store"></i> <span id="dash-store-name">Store</span></span>
+        <button class="logout-btn" onclick="doLogout()">
+          <i class="fa-solid fa-right-from-bracket"></i> Log Out
+        </button>
       </div>
     </div>
   </header>
 
-  <div class="dash-wrap">
-    <div class="dash-header">
-      <div>
-        <h2 style="font-size:1.5rem;color:var(--text);">Order Dashboard</h2>
-        <p style="font-size:.85rem;color:var(--text-soft);">Manage incoming orders for your store</p>
+  <!-- DASHBOARD WRAPPER -->
+  <main class="dashboard-container">
+    
+    <!-- Welcome & Store Switch Bar -->
+    <div class="welcome-row">
+      <div class="welcome-text">
+        <h2>Welcome Back, <span id="dash-store-title">Store Partner</span></h2>
+        <p>Manage incoming orders, update packaging states, and check metrics.</p>
+      </div>
+      
+      <!-- Live Store Status Controller -->
+      <div class="status-controller">
+        <span class="status-label">Store Delivery Status</span>
+        <label class="switch-container">
+          <input type="checkbox" id="store-status-toggle" onchange="toggleStoreStatus(this.checked)">
+          <span class="slider"></span>
+        </label>
+        <span id="store-status-txt" class="status-indicator-text closed">CLOSED</span>
       </div>
     </div>
 
-    <!-- Stats -->
-    <div class="stats-row" id="stats-row">
-      <div class="stat-card"><div class="sn" id="stat-total">0</div><div class="sl">Total Orders</div></div>
-      <div class="stat-card"><div class="sn" id="stat-pending">0</div><div class="sl">Pending</div></div>
-      <div class="stat-card"><div class="sn" id="stat-dispatched">0</div><div class="sl">Dispatched</div></div>
-      <div class="stat-card"><div class="sn" id="stat-delivered">0</div><div class="sl">Delivered</div></div>
-    </div>
-
-    <!-- Orders Table -->
-    <div class="orders-card">
-      <div class="orders-card-head">
-        <h3>Incoming Orders</h3>
-        <button class="refresh-btn" onclick="loadOrders()"><i class="fa-solid fa-rotate-right"></i> Refresh</button>
+    <!-- KPI Statistics Grid -->
+    <section class="kpi-grid">
+      <div class="kpi-card total">
+        <div class="kpi-details">
+          <span class="kpi-val" id="stat-total">0</span>
+          <span class="kpi-label">Total Orders</span>
+        </div>
+        <div class="kpi-icon"><i class="fa-solid fa-basket-shopping"></i></div>
       </div>
-      <div style="overflow-x:auto;">
-        <table class="orders-table">
+      <div class="kpi-card pending">
+        <div class="kpi-details">
+          <span class="kpi-val" id="stat-pending">0</span>
+          <span class="kpi-label">Pending</span>
+        </div>
+        <div class="kpi-icon"><i class="fa-solid fa-clock"></i></div>
+      </div>
+      <div class="kpi-card dispatched">
+        <div class="kpi-details">
+          <span class="kpi-val" id="stat-dispatched">0</span>
+          <span class="kpi-label">Dispatched</span>
+        </div>
+        <div class="kpi-icon"><i class="fa-solid fa-truck"></i></div>
+      </div>
+      <div class="kpi-card delivered">
+        <div class="kpi-details">
+          <span class="kpi-val" id="stat-delivered">0</span>
+          <span class="kpi-label">Delivered</span>
+        </div>
+        <div class="kpi-icon"><i class="fa-solid fa-circle-check"></i></div>
+      </div>
+    </section>
+
+    <!-- Incoming Orders Table Card -->
+    <div class="content-card">
+      <div class="card-header">
+        <h3><i class="fa-solid fa-list-check"></i> Incoming Customer Orders</h3>
+        <button class="refresh-btn" onclick="loadOrders()">
+          <i class="fa-solid fa-rotate-right"></i> Refresh List
+        </button>
+      </div>
+      <div class="table-container">
+        <table class="corporate-table">
           <thead>
             <tr>
               <th>Order ID</th>
-              <th>Customer</th>
-              <th>Phone</th>
-              <th>Items</th>
-              <th>Total</th>
+              <th>Customer Name</th>
+              <th>Phone Number</th>
+              <th>Order Items Details</th>
+              <th>Total Amount</th>
               <th>Payment</th>
-              <th>Time</th>
+              <th>Timestamp</th>
               <th>Status</th>
-              <th>Update</th>
+              <th>Update Status</th>
             </tr>
           </thead>
           <tbody id="orders-tbody">
-            <tr><td colspan="9" class="empty-orders"><i class="fa-solid fa-inbox"></i>No orders yet</td></tr>
+            <tr><td colspan="9" class="empty-orders"><i class="fa-solid fa-inbox"></i>No orders yet.</td></tr>
           </tbody>
         </table>
       </div>
     </div>
-  </div>
-</div>
 
-<script>
-let storeSession = null;
+  </main>
 
-async function doLogin(e) {
-  e.preventDefault();
-  const u = document.getElementById('s-user').value.trim();
-  const p = document.getElementById('s-pass').value.trim();
-  document.getElementById('login-err').style.display = 'none';
-  try {
-    const r = await fetch('/api/auth/store',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:u,password:p})});
-    const d = await r.json();
-    if (d.success) {
-      storeSession = d;
-      document.getElementById('login-screen').style.display = 'none';
-      document.getElementById('dash-screen').style.display = 'block';
-      document.getElementById('dash-store-name').textContent = d.storeName;
-      document.getElementById('dash-store-tag').textContent  = d.storeName;
-      loadOrders();
-      setInterval(loadOrders, 30000); // auto-refresh every 30s
-    } else {
-      document.getElementById('login-err').style.display = 'block';
+  <script>
+    let storeSession = null;
+    let storeObj = null;
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (sessionStorage.getItem('storeLoggedIn') === 'true') {
+        storeSession = {
+          storeId: sessionStorage.getItem('storeId'),
+          storeName: sessionStorage.getItem('storeName')
+        };
+        
+        document.getElementById('dash-store-name').textContent = storeSession.storeName;
+        document.getElementById('dash-store-title').textContent = storeSession.storeName;
+        
+        // Fetch current store state to sync switch toggle status
+        await fetchStoreState();
+        
+        loadOrders();
+        setInterval(loadOrders, 20000); // refresh every 20s
+      }
+    });
+
+    async function fetchStoreState() {
+      if (!storeSession) return;
+      try {
+        const res = await fetch('/api/stores');
+        const storesList = await res.json();
+        storeObj = storesList.find(s => s.id === storeSession.storeId);
+        
+        if (storeObj) {
+          const toggle = document.getElementById('store-status-toggle');
+          const txt = document.getElementById('store-status-txt');
+          
+          if (storeObj.status === 'active') {
+            toggle.checked = true;
+            txt.textContent = 'OPEN / ACCEPTING';
+            txt.className = 'status-indicator-text open';
+          } else {
+            toggle.checked = false;
+            txt.textContent = 'CLOSED / PAUSED';
+            txt.className = 'status-indicator-text closed';
+          }
+        }
+      } catch (err) {
+        console.error('Error fetching store details:', err);
+      }
     }
-  } catch(err) {
-    document.getElementById('login-err').textContent = 'Server error. Please try again.';
-    document.getElementById('login-err').style.display = 'block';
-  }
-}
 
-function doLogout() {
-  storeSession = null;
-  document.getElementById('login-screen').style.display = 'block';
-  document.getElementById('dash-screen').style.display  = 'none';
-}
+    async function toggleStoreStatus(isOpen) {
+      if (!storeSession || !storeObj) return;
+      const newStatus = isOpen ? 'active' : 'paused';
+      
+      try {
+        const res = await fetch(`/api/stores/${storeSession.storeId}/status`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: newStatus })
+        });
+        const data = await res.json();
+        if (data.success) {
+          storeObj = data.store;
+          const txt = document.getElementById('store-status-txt');
+          if (newStatus === 'active') {
+            txt.textContent = 'OPEN / ACCEPTING';
+            txt.className = 'status-indicator-text open';
+          } else {
+            txt.textContent = 'CLOSED / PAUSED';
+            txt.className = 'status-indicator-text closed';
+          }
+        }
+      } catch (err) {
+        alert('Failed to update store status. Please try again.');
+        document.getElementById('store-status-toggle').checked = !isOpen;
+      }
+    }
 
-async function loadOrders() {
-  if (!storeSession) return;
-  try {
-    const r  = await fetch(`/api/orders/store/${storeSession.storeId}`);
-    const orders = await r.json();
-    renderOrders(orders);
-  } catch(e) { console.error(e); }
-}
+    async function loadOrders() {
+      if (!storeSession) return;
+      try {
+        const r = await fetch(`/api/orders/store/${storeSession.storeId}`);
+        const orders = await r.json();
+        renderOrders(orders);
+      } catch (e) {
+        console.error('Error loading orders:', e);
+      }
+    }
 
-function renderOrders(orders) {
-  const tbody = document.getElementById('orders-tbody');
-  // Stats
-  document.getElementById('stat-total').textContent     = orders.length;
-  document.getElementById('stat-pending').textContent   = orders.filter(o=>o.status==='Pending').length;
-  document.getElementById('stat-dispatched').textContent= orders.filter(o=>o.status==='Dispatched').length;
-  document.getElementById('stat-delivered').textContent = orders.filter(o=>o.status==='Delivered').length;
+    function renderOrders(orders) {
+      const tbody = document.getElementById('orders-tbody');
+      
+      // Update KPIs
+      document.getElementById('stat-total').textContent = orders.length;
+      document.getElementById('stat-pending').textContent = orders.filter(o => o.status === 'Pending').length;
+      document.getElementById('stat-dispatched').textContent = orders.filter(o => o.status === 'Dispatched').length;
+      document.getElementById('stat-delivered').textContent = orders.filter(o => o.status === 'Delivered').length;
 
-  if (!orders.length) {
-    tbody.innerHTML = `<tr><td colspan="9" class="empty-orders"><i class="fa-solid fa-inbox"></i>No orders yet. Share your PIN zone with customers!</td></tr>`;
-    return;
-  }
-  tbody.innerHTML = '';
-  [...orders].reverse().forEach(o => {
-    const items = (o.items||[]).map(i=>`${i.nameEn||i.nameMr} (${i.lEn||i.optionEn||''}) ×${i.qty}`).join(', ');
-    const time  = o.timestamp ? new Date(o.timestamp).toLocaleString('en-IN') : '-';
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td><strong style="color:var(--orange);">${o.id}</strong></td>
-      <td>${o.customerName}</td>
-      <td>${o.customerPhone}</td>
-      <td style="max-width:180px;font-size:.76rem;">${items}</td>
-      <td><strong>₹${o.totalAmount}</strong></td>
-      <td>${o.paymentMethod}</td>
-      <td style="font-size:.76rem;">${time}</td>
-      <td><span class="status-pill ${o.status}">${o.status}</span></td>
-      <td>
-        <select class="status-sel" onchange="updateStatus('${o.id}', this.value)">
-          ${['Pending','Preparing','Dispatched','Delivered','Cancelled'].map(s=>`<option ${o.status===s?'selected':''}>${s}</option>`).join('')}
-        </select>
-      </td>`;
-    tbody.appendChild(tr);
-  });
-}
+      if (!orders.length) {
+        tbody.innerHTML = `<tr><td colspan="9" class="empty-orders"><i class="fa-solid fa-inbox"></i>No orders assigned to your store yet.</td></tr>`;
+        return;
+      }
+      
+      tbody.innerHTML = '';
+      [...orders].reverse().forEach(o => {
+        const items = (o.items || []).map(i => `${i.nameEn || i.nameMr} (${i.lEn || i.optionEn || 'Live'}) × ${i.qty}`).join('<br>');
+        const time = o.timestamp ? new Date(o.timestamp).toLocaleString('en-IN') : '-';
+        const tr = document.createElement('tr');
+        
+        tr.innerHTML = `
+          <td><strong style="color:var(--orange);">${o.id}</strong></td>
+          <td><strong>${o.customerName}</strong><br><small style="color:var(--text-soft);">${o.deliveryAddress || 'Store Pickup'}</small></td>
+          <td><i class="fa-solid fa-phone" style="font-size:0.75rem;color:var(--orange);"></i> ${o.customerPhone}</td>
+          <td style="font-size:0.8rem;line-height:1.4;">${items}</td>
+          <td><strong>₹${o.totalAmount}</strong></td>
+          <td><span style="font-size:0.75rem;font-weight:700;color:var(--text-mid);">${o.paymentMethod}</span></td>
+          <td style="font-size:0.75rem;color:var(--text-soft);">${time}</td>
+          <td><span class="status-pill status-${o.status}">${o.status}</span></td>
+          <td>
+            <select class="status-select" onchange="updateStatus('${o.id}', this.value)">
+              ${['Pending', 'Preparing', 'Dispatched', 'Delivered', 'Cancelled'].map(s => `<option ${o.status === s ? 'selected' : ''}>${s}</option>`).join('')}
+            </select>
+          </td>`;
+        tbody.appendChild(tr);
+      });
+    }
 
-async function updateStatus(id, status) {
-  try {
-    await fetch(`/api/orders/${id}`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({status})});
-    loadOrders();
-  } catch(e) { alert('Failed to update. Try again.'); }
-}
-</script>
+    async function updateStatus(id, status) {
+      try {
+        const res = await fetch(`/api/orders/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status })
+        });
+        const data = await res.json();
+        if (data.success) {
+          loadOrders();
+        }
+      } catch (e) {
+        alert('Failed to update status. Try again.');
+      }
+    }
+
+    function doLogout() {
+      sessionStorage.clear();
+      window.location.href = '/login.html';
+    }
+  </script>
 </body>
 </html>

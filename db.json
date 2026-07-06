@@ -14,7 +14,7 @@
       "highlightMr": "१८०+ दिवस वाढवलेले — अस्सल गावरान चव, केमिकल व स्टेरॉइड मुक्त",
       "highlightEn": "Raised 180+ days — authentic village taste, chemical & steroid free",
       "images": [
-        "/uploads/desi_live.png",
+        "/uploads/gavran_desi_new.png",
         "https://images.unsplash.com/photo-1604503468506-a8da13d82791?w=700&auto=format&fit=crop&q=80"
       ]
     },
@@ -32,7 +32,7 @@
       "highlightMr": "१०५+ दिवस नैसर्गिकरीत्या वाढवलेले — उत्तम गुणवत्ता",
       "highlightEn": "Naturally raised 105+ days — maximum tenderness & taste",
       "images": [
-        "/uploads/supreme_live.png",
+        "/uploads/gavran_supreme_new.png",
         "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=700&auto=format&fit=crop&q=80"
       ]
     },
@@ -50,7 +50,7 @@
       "highlightMr": "७५+ दिवस, नैसर्गिक आहारावर वाढलेले — जलद वाढ, खरी गावरान चव",
       "highlightEn": "Raised 75+ days on natural diet — fast-grow, true to nature",
       "images": [
-        "/uploads/power_live.png",
+        "/uploads/gavran_power_grow_new.png",
         "https://images.unsplash.com/photo-1598515214211-89d3e73ae83b?w=700&auto=format&fit=crop&q=80"
       ]
     }
@@ -68,6 +68,9 @@
       "timings": "8:00 AM – 8:00 PM (All Days)",
       "status": "active",
       "pinCodes": ["415110", "415111", "415112", "415113", "415114", "415115", "415116", "415117", "415118", "415119", "415124"],
+      "lat": 17.2894,
+      "lng": 74.1925,
+      "radius": 5,
       "credentials": { "username": "karad_store", "password": "karad@2026" }
     },
     {
@@ -82,6 +85,9 @@
       "timings": "8:00 AM – 8:00 PM (All Days)",
       "status": "coming_soon",
       "pinCodes": [],
+      "lat": 16.7050,
+      "lng": 74.2433,
+      "radius": 5,
       "credentials": { "username": "kolhapur_store", "password": "kolhapur@2026" }
     }
   ],
