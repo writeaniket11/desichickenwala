@@ -33,8 +33,10 @@ jobs:
       - name: Install Capacitor CLI
         run: npm install -g @capacitor/cli
 
+
+
       - name: Sync Web Assets into Android
-        run: npx cap sync android
+        run: npx cap sync android --verbose
 
       - name: Grant Gradlew Execute Permission
         run: chmod +x android/gradlew
