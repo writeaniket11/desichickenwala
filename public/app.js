@@ -551,7 +551,29 @@ function openCheckout() {
 }
 
 function closeCheckout() { document.getElementById('checkout-modal').classList.remove('open'); }
-function toggleUPI(show) { document.getElementById('upi-box').style.display = show?'block':'none'; }
+function toggleUPI(show) {
+  document.getElementById('upi-box').style.display = show ? 'block' : 'none';
+  if (show) updateUPIPayment();
+}
+
+function updateUPIPayment() {
+  const total = cart.reduce((s, c) => s + c.price * c.qty, 0);
+  const upiId  = 'kirankoli604@iob';
+  const name   = 'Desi+Chickenwala';
+  const note   = 'Order+from+Desi+Chickenwala';
+
+  // GPay / UPI deep link
+  const upiLink = `upi://pay?pa=${upiId}&pn=${name}&am=${total}&cu=INR&tn=${note}`;
+  document.getElementById('gpay-link').href = upiLink;
+
+  // QR Code image (encoded UPI string)
+  const qrData  = encodeURIComponent(upiLink);
+  const qrUrl   = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${qrData}`;
+  document.getElementById('upi-qr-img').src = qrUrl;
+
+  // Total label
+  document.getElementById('upi-total').textContent = `Total: ₹${total}`;
+}
 
 async function submitOrder(e) {
   e.preventDefault();
