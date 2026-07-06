@@ -43,7 +43,7 @@ jobs:
           chmod +x android/gradlew
 
       - name: Sync Web Assets into Android
-        run: npx cap sync android --verbose > cap_sync_log.txt 2>&1 || (cat cap_sync_log.txt && exit 1)
+        run: npx cap sync android > cap_sync_log.txt 2>&1 || (cat cap_sync_log.txt && exit 1)
 
       - name: Upload Sync Log on Failure
         if: failure()
