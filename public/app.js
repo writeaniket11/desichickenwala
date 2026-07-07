@@ -545,8 +545,10 @@ function openCheckout() {
     document.getElementById('pin-sec').scrollIntoView({behavior:'smooth'}); return;
   }
   toggleCart(false);
-  const total = cart.reduce((s,c)=>s+c.price*c.qty,0);
-  document.getElementById('upi-total').textContent = `Total: ₹${total}`;
+  // Reset payment to COD and hide UPI box
+  const codRadio = document.getElementById('pay-cod');
+  if (codRadio) codRadio.checked = true;
+  document.getElementById('upi-box').style.display = 'none';
   document.getElementById('checkout-modal').classList.add('open');
 }
 
